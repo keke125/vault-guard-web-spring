@@ -1,8 +1,8 @@
-package com.keke125.vaultguardweb.account.service;
+package com.keke125.vaultguard.web.spring.account.service;
 
 
-import com.keke125.vaultguardweb.account.request.AuthRequest;
-import com.keke125.vaultguardweb.util.AppConfig;
+import com.keke125.vaultguard.web.spring.account.request.AuthRequest;
+import com.keke125.vaultguard.web.spring.util.AppConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;

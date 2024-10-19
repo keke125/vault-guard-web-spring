@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.keke125</groupId>
-    <artifactId>VaultGuardWeb</artifactId>
+    <artifactId>vault-guard-web-spring</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>VaultGuardWeb</name>
     <description>VaultGuardWeb</description>

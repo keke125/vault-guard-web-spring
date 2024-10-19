@@ -1,4 +1,4 @@
-package com.keke125.vaultguardweb.account;
+package com.keke125.vaultguard.web.spring.account;
 
 import java.util.Collections;
 import java.util.Map;

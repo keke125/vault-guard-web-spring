@@ -1,7 +1,7 @@
-package com.keke125.vaultguardweb.account.config;
+package com.keke125.vaultguard.web.spring.account.config;
 
-import com.keke125.vaultguardweb.account.service.JWTService;
-import com.keke125.vaultguardweb.account.service.UserDetailsServiceImpl;
+import com.keke125.vaultguard.web.spring.account.service.JWTService;
+import com.keke125.vaultguard.web.spring.account.service.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

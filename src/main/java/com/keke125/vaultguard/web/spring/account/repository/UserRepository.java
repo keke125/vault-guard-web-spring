@@ -1,6 +1,6 @@
-package com.keke125.vaultguardweb.account.repository;
+package com.keke125.vaultguard.web.spring.account.repository;
 
-import com.keke125.vaultguardweb.account.entity.User;
+import com.keke125.vaultguard.web.spring.account.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;

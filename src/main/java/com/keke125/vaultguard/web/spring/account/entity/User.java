@@ -1,7 +1,7 @@
-package com.keke125.vaultguardweb.account.entity;
+package com.keke125.vaultguard.web.spring.account.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.keke125.vaultguardweb.util.AbstractEntity;
+import com.keke125.vaultguard.web.spring.util.AbstractEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Email;

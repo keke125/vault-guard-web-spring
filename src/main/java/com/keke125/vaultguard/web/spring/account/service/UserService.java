@@ -1,7 +1,7 @@
-package com.keke125.vaultguardweb.account.service;
+package com.keke125.vaultguard.web.spring.account.service;
 
-import com.keke125.vaultguardweb.account.entity.User;
-import com.keke125.vaultguardweb.account.repository.UserRepository;
+import com.keke125.vaultguard.web.spring.account.entity.User;
+import com.keke125.vaultguard.web.spring.account.repository.UserRepository;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

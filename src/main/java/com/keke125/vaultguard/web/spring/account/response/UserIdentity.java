@@ -1,8 +1,8 @@
-package com.keke125.vaultguardweb.account.response;
+package com.keke125.vaultguard.web.spring.account.response;
 
-import com.keke125.vaultguardweb.account.entity.Role;
-import com.keke125.vaultguardweb.account.entity.User;
-import com.keke125.vaultguardweb.account.service.UserService;
+import com.keke125.vaultguard.web.spring.account.entity.Role;
+import com.keke125.vaultguard.web.spring.account.entity.User;
+import com.keke125.vaultguard.web.spring.account.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

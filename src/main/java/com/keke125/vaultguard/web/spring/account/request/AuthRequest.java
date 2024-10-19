@@ -1,4 +1,4 @@
-package com.keke125.vaultguardweb.account.request;
+package com.keke125.vaultguard.web.spring.account.request;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

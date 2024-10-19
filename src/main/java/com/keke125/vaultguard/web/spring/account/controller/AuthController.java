@@ -1,11 +1,11 @@
-package com.keke125.vaultguardweb.account.controller;
+package com.keke125.vaultguard.web.spring.account.controller;
 
-import com.keke125.vaultguardweb.account.entity.Role;
-import com.keke125.vaultguardweb.account.entity.User;
-import com.keke125.vaultguardweb.account.request.AuthRequest;
-import com.keke125.vaultguardweb.account.request.SignupRequest;
-import com.keke125.vaultguardweb.account.service.JWTService;
-import com.keke125.vaultguardweb.account.service.UserService;
+import com.keke125.vaultguard.web.spring.account.entity.Role;
+import com.keke125.vaultguard.web.spring.account.entity.User;
+import com.keke125.vaultguard.web.spring.account.request.AuthRequest;
+import com.keke125.vaultguard.web.spring.account.request.SignupRequest;
+import com.keke125.vaultguard.web.spring.account.service.JWTService;
+import com.keke125.vaultguard.web.spring.account.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-import static com.keke125.vaultguardweb.account.ResponseMessage.*;
+import static com.keke125.vaultguard.web.spring.account.ResponseMessage.*;
 
 @RestController
 @RequestMapping(value = "/api/v1/auth", produces = MediaType.APPLICATION_JSON_VALUE)

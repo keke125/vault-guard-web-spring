@@ -1,4 +1,4 @@
-package com.keke125.vaultguardweb.util;
+package com.keke125.vaultguard.web.spring.util;
 
 import jakarta.persistence.*;
 import lombok.Data;

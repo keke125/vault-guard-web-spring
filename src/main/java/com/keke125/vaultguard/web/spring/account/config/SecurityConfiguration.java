@@ -1,6 +1,6 @@
-package com.keke125.vaultguardweb.account.config;
+package com.keke125.vaultguard.web.spring.account.config;
 
-import com.keke125.vaultguardweb.util.AppConfig;
+import com.keke125.vaultguard.web.spring.util.AppConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

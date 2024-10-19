@@ -1,4 +1,4 @@
-package com.keke125.vaultguardweb.util;
+package com.keke125.vaultguard.web.spring.util;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

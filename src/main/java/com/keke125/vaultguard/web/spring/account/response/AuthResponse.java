@@ -1,4 +1,4 @@
-package com.keke125.vaultguardweb.account.response;
+package com.keke125.vaultguard.web.spring.account.response;
 
 import lombok.Data;
 

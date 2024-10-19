@@ -1,4 +1,4 @@
-package com.keke125.vaultguardweb;
+package com.keke125.vaultguard.web.spring;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

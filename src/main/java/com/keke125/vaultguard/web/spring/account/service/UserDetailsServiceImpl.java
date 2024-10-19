@@ -1,9 +1,9 @@
-package com.keke125.vaultguardweb.account.service;
+package com.keke125.vaultguard.web.spring.account.service;
 
 import java.util.Optional;
 
-import com.keke125.vaultguardweb.account.entity.User;
-import com.keke125.vaultguardweb.account.repository.UserRepository;
+import com.keke125.vaultguard.web.spring.account.entity.User;
+import com.keke125.vaultguard.web.spring.account.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
