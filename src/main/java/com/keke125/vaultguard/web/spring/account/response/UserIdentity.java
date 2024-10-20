@@ -10,14 +10,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserIdentity {
-    private final User EMPTY_USER = new User();
+    public static final User EMPTY_USER = new User();
     private final UserService userService;
 
     public UserIdentity(UserService userService) {
         this.userService = userService;
     }
 
-    private User getCurrentUser() {
+    public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails principal = (UserDetails) authentication.getPrincipal();
         return userService.findByUsername(principal.getUsername()).getRoles().contains(Role.USER) ? userService.findByUsername(principal.getUsername()) : EMPTY_USER;

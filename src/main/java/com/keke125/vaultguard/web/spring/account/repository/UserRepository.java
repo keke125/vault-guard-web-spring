@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
+public interface UserRepository extends JpaRepository<User, String>, JpaSpecificationExecutor<User> {
 
     Optional<User> findByUsername(String username);
 
-    Optional<User> findById(Long id);
+    Optional<User> findByUid(String uid);
 
     List<User> findAllByEmail(String email);
 }
