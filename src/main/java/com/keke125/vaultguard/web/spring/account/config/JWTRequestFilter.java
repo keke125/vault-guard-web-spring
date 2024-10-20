@@ -42,12 +42,17 @@ public class JWTRequestFilter extends OncePerRequestFilter {
             return;
         }
 
-        // Set user details on spring security context
-        final UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(username);
-        final UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                userDetails, null, userDetails.getAuthorities());
-        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            // check if user exists
+            final UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(username);
+            // Set user details on spring security context
+            final UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (Exception exception) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         // continue with authenticated user
         filterChain.doFilter(request, response);
