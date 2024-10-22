@@ -3,11 +3,10 @@ package com.keke125.vaultguard.web.spring.account.service;
 import com.keke125.vaultguard.web.spring.account.entity.User;
 import com.keke125.vaultguard.web.spring.account.repository.UserRepository;
 import lombok.Getter;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -22,16 +21,8 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User update(User entity) {
-        return repository.save(entity);
-    }
-
-    public Page<User> list(Pageable pageable) {
-        return repository.findAll(pageable);
-    }
-
-    public Page<User> list(Pageable pageable, Specification<User> filter) {
-        return repository.findAll(filter, pageable);
+    public void update(User entity) {
+        repository.save(entity);
     }
 
     public void store(User user) {
@@ -46,8 +37,8 @@ public class UserService {
         return repository.findAllByEmail(email).isEmpty();
     }
 
-    public User findByUsername(String userName) {
-        return repository.findByUsername(userName).orElse(null);
+    public Optional<User> findByUsername(String userName) {
+        return repository.findByUsername(userName);
     }
 
 }

@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -27,26 +28,32 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    @ResponseBody
-    User getUserProfileByJWT() {
-        return userService.findByUsername(userIdentity.getUsername());
+    ResponseEntity<User> getUserProfileByJWT() {
+        Optional<User> user = userIdentity.getCurrentUser();
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException(userNotFoundMessage);
+        }
+        return ResponseEntity.ok(user.get());
     }
 
     @PatchMapping("/user")
     public ResponseEntity<Map<String, String>> signUp(@Valid @RequestBody SignupRequest request) {
-        User user = userService.findByUsername(userIdentity.getUsername());
-        if (!Objects.equals(request.getUsername(), user.getUsername())) {
+        Optional<User> user = userIdentity.getCurrentUser();
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException(userNotFoundMessage);
+        }
+        if (!Objects.equals(request.getUsername(), user.get().getUsername())) {
             return ResponseEntity.badRequest().body(usernameNotAllowedResponse);
         }
         if (request.getPassword().length() < 8 || request.getPassword().length() > 128) {
             return ResponseEntity.badRequest().body(passwordLengthRangeResponse);
         }
-        if (!userService.isEmailNonExist(request.getEmail()) && !Objects.equals(request.getEmail(), user.getEmail())) {
+        if (!userService.isEmailNonExist(request.getEmail()) && !Objects.equals(request.getEmail(), user.get().getEmail())) {
             return ResponseEntity.badRequest().body(emailDuplicatedResponse);
         }
-        user.setHashedPassword(userService.getPasswordEncoder().encode(request.getPassword()));
-        user.setEmail(request.getEmail());
-        userService.update(user);
+        user.get().setHashedPassword(userService.getPasswordEncoder().encode(request.getPassword()));
+        user.get().setEmail(request.getEmail());
+        userService.update(user.get());
         return ResponseEntity.ok(successUpdateResponse);
     }
 
