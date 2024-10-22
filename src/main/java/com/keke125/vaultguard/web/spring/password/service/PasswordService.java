@@ -1,7 +1,6 @@
 package com.keke125.vaultguard.web.spring.password.service;
 
 import com.keke125.vaultguard.web.spring.account.entity.User;
-import com.keke125.vaultguard.web.spring.account.repository.UserRepository;
 import com.keke125.vaultguard.web.spring.password.entity.Password;
 import com.keke125.vaultguard.web.spring.password.repository.PasswordRepository;
 import com.keke125.vaultguard.web.spring.password.request.SavePasswordRequest;
@@ -36,19 +35,19 @@ public class PasswordService {
         repository.save(password);
     }
 
-    public List<Password> findByUserUid(String userUid) {
+    public List<Password> findAllByUserUid(String userUid) {
         return repository.findAllByUserUid(userUid);
     }
 
-    public Optional<Password> findByUid(String uid) {
-        return repository.findByUid(uid);
+    public Optional<Password> findByUidAndUserUid(String uid, String userUid) {
+        return repository.findByUidAndUserUid(uid,userUid);
     }
 
     public void delete(Password password) {
         repository.delete(password);
     }
 
-    public Boolean isPasswordExists(String name, String username) {
-        return repository.findByNameAndUsername(name, username).isPresent();
+    public Boolean isPasswordExists(String name, String username, String userUid) {
+        return repository.findByNameAndUsernameAndUserUid(name, username, userUid).isPresent();
     }
 }
