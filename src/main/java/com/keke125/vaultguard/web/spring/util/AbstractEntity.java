@@ -1,5 +1,6 @@
 package com.keke125.vaultguard.web.spring.util;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -11,6 +12,7 @@ public abstract class AbstractEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String uid;
     @Version
+    @JsonIgnore
     private int version;
 
     @Override

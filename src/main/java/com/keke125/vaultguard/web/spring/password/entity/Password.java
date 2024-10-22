@@ -1,5 +1,6 @@
 package com.keke125.vaultguard.web.spring.password.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.keke125.vaultguard.web.spring.util.AbstractEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,5 +29,6 @@ public class Password extends AbstractEntity {
     private String totp;
     private String createdDateTime = "";
     private String lastModifiedDateTime = "";
+    @JsonIgnore
     private String userUid;
 }

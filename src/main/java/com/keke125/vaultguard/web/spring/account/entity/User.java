@@ -44,15 +44,19 @@ public class User extends AbstractEntity implements UserDetails {
 
     @Setter
     @Getter
+    @JsonIgnore
     private boolean enabled;
     @Setter
     @Getter
+    @JsonIgnore
     private boolean isAccountNonExpired;
     @Setter
     @Getter
+    @JsonIgnore
     private boolean isAccountNonLocked;
     @Setter
     @Getter
+    @JsonIgnore
     private boolean isCredentialsNonExpired;
 
     @NotNull
@@ -60,6 +64,7 @@ public class User extends AbstractEntity implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     @Getter
     @Setter
+    @JsonIgnore
     private Set<Role> roles;
 
     @Override
