@@ -12,15 +12,12 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@IdClass(PasswordId.class)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "password")
+@Table(name = "password", uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "username"})})
 public class Password extends AbstractEntity {
-    @Id
     private String name;
-    @Id
     private String username;
     private String password;
     @ElementCollection
