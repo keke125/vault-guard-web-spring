@@ -3,6 +3,7 @@ package com.keke125.vaultguard.web.spring.password.controller;
 import com.keke125.vaultguard.web.spring.account.entity.User;
 import com.keke125.vaultguard.web.spring.account.response.UserIdentity;
 import com.keke125.vaultguard.web.spring.password.entity.Password;
+import com.keke125.vaultguard.web.spring.password.request.DeletePasswordRequest;
 import com.keke125.vaultguard.web.spring.password.request.SavePasswordRequest;
 import com.keke125.vaultguard.web.spring.password.request.UpdatePasswordRequest;
 import com.keke125.vaultguard.web.spring.password.service.PasswordService;
@@ -81,5 +82,19 @@ public class PasswordController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @DeleteMapping("/password")
+    public ResponseEntity<Map<String, String>> deletePassword(@Valid @RequestBody DeletePasswordRequest request) {
+        Optional<User> user = userIdentity.getCurrentUser();
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException(userNotFoundMessage);
+        }
+        Optional<Password> deletedPassword = passwordService.findByUidAndUserUid(request.getUid(), user.get().getUid());
+        if (deletedPassword.isEmpty()) {
+            return ResponseEntity.badRequest().body(passwordNotFoundResponse);
+        }
+        passwordService.deletePassword(deletedPassword.get());
+        return ResponseEntity.ok(successDeletePasswordResponse);
     }
 }

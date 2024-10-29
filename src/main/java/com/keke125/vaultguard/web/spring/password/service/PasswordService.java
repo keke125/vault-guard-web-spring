@@ -58,7 +58,7 @@ public class PasswordService {
         return repository.findByUidAndUserUid(uid, userUid);
     }
 
-    public void delete(Password password) {
+    public void deletePassword(Password password) {
         repository.delete(password);
     }
 
