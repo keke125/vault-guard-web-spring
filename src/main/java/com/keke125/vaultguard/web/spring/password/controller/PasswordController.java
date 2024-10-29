@@ -4,6 +4,7 @@ import com.keke125.vaultguard.web.spring.account.entity.User;
 import com.keke125.vaultguard.web.spring.account.response.UserIdentity;
 import com.keke125.vaultguard.web.spring.password.entity.Password;
 import com.keke125.vaultguard.web.spring.password.request.SavePasswordRequest;
+import com.keke125.vaultguard.web.spring.password.request.UpdatePasswordRequest;
 import com.keke125.vaultguard.web.spring.password.service.PasswordService;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
@@ -13,11 +14,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.keke125.vaultguard.web.spring.account.ResponseMessage.userNotFoundMessage;
-import static com.keke125.vaultguard.web.spring.password.ResponseMessage.passwordDuplicatedResponse;
-import static com.keke125.vaultguard.web.spring.password.ResponseMessage.successSavePasswordResponse;
+import static com.keke125.vaultguard.web.spring.password.ResponseMessage.*;
 
 @RestController
 @RequestMapping(value = "/api/v1/password", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -41,6 +42,23 @@ public class PasswordController {
         }
         passwordService.savePassword(request, user.get());
         return ResponseEntity.ok(successSavePasswordResponse);
+    }
+
+    @PatchMapping("/password")
+    public ResponseEntity<Map<String, String>> updatePassword(@Valid @RequestBody UpdatePasswordRequest request) {
+        Optional<User> user = userIdentity.getCurrentUser();
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException(userNotFoundMessage);
+        }
+        Optional<Password> oldPassword = passwordService.findByUidAndUserUid(request.getUid(), user.get().getUid());
+        if (oldPassword.isEmpty()) {
+            return ResponseEntity.badRequest().body(passwordNotFoundResponse);
+        }
+        if ((!Objects.equals(request.getName(), oldPassword.get().getName()) && !Objects.equals(request.getUsername(), oldPassword.get().getUsername())) && passwordService.isPasswordExists(request.getName(), request.getUsername(), user.get().getUid())) {
+            return ResponseEntity.badRequest().body(passwordDuplicatedResponse);
+        }
+        passwordService.updatePassword(request, user.get(), oldPassword.get());
+        return ResponseEntity.ok(successUpdatePasswordResponse);
     }
 
     @GetMapping("/passwords")

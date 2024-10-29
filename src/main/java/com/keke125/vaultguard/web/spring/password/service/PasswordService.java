@@ -4,6 +4,7 @@ import com.keke125.vaultguard.web.spring.account.entity.User;
 import com.keke125.vaultguard.web.spring.password.entity.Password;
 import com.keke125.vaultguard.web.spring.password.repository.PasswordRepository;
 import com.keke125.vaultguard.web.spring.password.request.SavePasswordRequest;
+import com.keke125.vaultguard.web.spring.password.request.UpdatePasswordRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,12 +36,26 @@ public class PasswordService {
         repository.save(password);
     }
 
+    public void updatePassword(UpdatePasswordRequest request, User user, Password oldPassword) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        String timeStamp = LocalDateTime.now().format(formatter);
+        oldPassword.setPassword(request.getPassword());
+        oldPassword.setUsername(request.getUsername());
+        oldPassword.setName(request.getName());
+        oldPassword.setTotp(request.getTotp());
+        oldPassword.setNotes(request.getNotes());
+        oldPassword.setUrlList(request.getUrlList());
+        oldPassword.setLastModifiedDateTime(timeStamp);
+        oldPassword.setUserUid(user.getUid());
+        repository.save(oldPassword);
+    }
+
     public List<Password> findAllByUserUid(String userUid) {
         return repository.findAllByUserUid(userUid);
     }
 
     public Optional<Password> findByUidAndUserUid(String uid, String userUid) {
-        return repository.findByUidAndUserUid(uid,userUid);
+        return repository.findByUidAndUserUid(uid, userUid);
     }
 
     public void delete(Password password) {
