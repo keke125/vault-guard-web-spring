@@ -65,4 +65,9 @@ public class PasswordService {
     public Boolean isPasswordExists(String name, String username, String userUid) {
         return repository.findByNameAndUsernameAndUserUid(name, username, userUid).isPresent();
     }
+
+    public void savePasswordByPassword(Password password, User user) {
+        password.setUserUid(user.getUid());
+        repository.save(password);
+    }
 }
