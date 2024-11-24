@@ -1,5 +1,7 @@
 package com.keke125.vaultguard.web.spring.password.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.keke125.vaultguard.web.spring.account.entity.User;
 import com.keke125.vaultguard.web.spring.account.response.UserIdentity;
 import com.keke125.vaultguard.web.spring.password.entity.Password;
@@ -8,11 +10,15 @@ import com.keke125.vaultguard.web.spring.password.request.SavePasswordRequest;
 import com.keke125.vaultguard.web.spring.password.request.UpdatePasswordRequest;
 import com.keke125.vaultguard.web.spring.password.service.PasswordService;
 import jakarta.validation.Valid;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -26,6 +32,8 @@ import static com.keke125.vaultguard.web.spring.password.ResponseMessage.*;
 public class PasswordController {
     private final PasswordService passwordService;
     private final UserIdentity userIdentity;
+    private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public PasswordController(PasswordService passwordService, UserIdentity userIdentity) {
         this.passwordService = passwordService;
@@ -63,12 +71,28 @@ public class PasswordController {
     }
 
     @GetMapping("/passwords")
-    public ResponseEntity<List<Password>> getAllPasswords() {
+    public ResponseEntity<?> getAllPasswords(@RequestParam String type) {
         Optional<User> user = userIdentity.getCurrentUser();
         if (user.isEmpty()) {
             throw new UsernameNotFoundException(userNotFoundMessage);
         }
-        return ResponseEntity.ok(passwordService.findAllByUserUid(user.get().getUid()));
+        List<Password> passwords = passwordService.findAllByUserUid(user.get().getUid());
+        if(Objects.equals(type, "file")){
+            ByteArrayResource resource;
+            String fileName;
+            try {
+                String jsonData = objectMapper.writeValueAsString(passwords);
+                resource = new ByteArrayResource(jsonData.getBytes());
+                fileName = "vaultguard-" + LocalDateTime.now().format(formatter) + "-export.json";
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"").contentLength(resource.contentLength()).contentType(MediaType.APPLICATION_JSON).body(resource);
+        }else if(Objects.equals(type, "json")){
+            return ResponseEntity.ok(passwordService.findAllByUserUid(user.get().getUid()));
+        }else{
+            return ResponseEntity.badRequest().body(disallowedExportFileTypeResponse);
+        }
     }
 
     @GetMapping("/password/{uid}")
