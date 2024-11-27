@@ -21,7 +21,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -29,6 +28,7 @@ import java.util.*;
 
 import static com.keke125.vaultguard.web.spring.account.ResponseMessage.userNotFoundMessage;
 import static com.keke125.vaultguard.web.spring.password.ResponseMessage.*;
+import static com.keke125.vaultguard.web.spring.password.service.FileService.APPLICATION_JSON_TYPE_LIST;
 import static com.keke125.vaultguard.web.spring.password.service.FileService.TEXT_CSV_TYPE_LIST;
 
 @RestController
@@ -136,19 +136,33 @@ public class PasswordController {
         if (user.isEmpty()) {
             throw new UsernameNotFoundException(userNotFoundMessage);
         }
-        if (Objects.equals(type, "GPM")) {
+        if (Objects.equals(type, "GPM") || Objects.equals(type, "VG")) {
             try {
                 // Check File Exists
                 if (file.isEmpty()) {
                     return ResponseEntity.badRequest().body(missingUploadFileResponse);
                 }
+                String mimeType;
                 // Check MIME Type
-                String mimeType = tika.detect(file.getInputStream());
-                if (!TEXT_CSV_TYPE_LIST.contains(mimeType)) {
-                    return ResponseEntity.badRequest().body(errorUploadFileTypeCSVResponse);
+                if (Objects.equals(type, "GPM")) {
+                    // Check MIME Type
+                    mimeType = tika.detect(file.getInputStream(), file.getOriginalFilename());
+                    if (!TEXT_CSV_TYPE_LIST.contains(mimeType)) {
+                        return ResponseEntity.badRequest().body(errorUploadFileTypeCSVResponse);
+                    }
+                } else if (Objects.equals(type, "VG")) {
+                    mimeType = tika.detect(file.getInputStream());
+                    if (!APPLICATION_JSON_TYPE_LIST.contains(mimeType)) {
+                        return ResponseEntity.badRequest().body(errorUploadFileTypeJSONResponse);
+                    }
                 }
                 InputStream inputStream = file.getInputStream();
-                List<Password> passwords = fileService.readCsvFromGPM(inputStream);
+                List<Password> passwords = Collections.emptyList();
+                if (Objects.equals(type, "GPM")) {
+                    passwords = fileService.readCsvFromGPM(inputStream);
+                } else if (Objects.equals(type, "VG")) {
+                    passwords = fileService.readJsonFromVG(inputStream);
+                }
                 int successCnt = 0;
                 int failedCnt = 0;
                 for (Password password : passwords) {
@@ -164,12 +178,9 @@ public class PasswordController {
                     successCnt += 1;
                 }
                 return ResponseEntity.ok(new SavePasswordsResponse(successCnt, failedCnt));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 return ResponseEntity.badRequest().body(errorSavePasswordsResponse);
             }
-        } else if (Objects.equals(type, "VG")) {
-            // TODO
-            return ResponseEntity.badRequest().body("");
         } else {
             return ResponseEntity.badRequest().body(disallowedImportTypeResponse);
         }

@@ -13,6 +13,7 @@ public class ResponseMessage {
     public static String disallowedImportTypeMessage = "不允許匯入的類型!";
     public static String missingUploadFileMessage = "找不到上傳檔案!";
     public static String errorUploadFileTypeCSVMessage = "請上傳CSV檔!";
+    public static String errorUploadFileTypeJSONMessage = "請上傳JSON檔!";
     public static String errorSavePasswordsMessage = "請檢查上傳檔案是否正確!";
     public static Map<String, String> successSavePasswordResponse = Collections.singletonMap("message", successSavePasswordMessage);
     public static Map<String, String> passwordDuplicatedResponse = Collections.singletonMap("message", passwordDuplicatedMessage);
@@ -23,5 +24,6 @@ public class ResponseMessage {
     public static Map<String, String> disallowedImportTypeResponse = Collections.singletonMap("message", disallowedImportTypeMessage);
     public static Map<String, String> missingUploadFileResponse = Collections.singletonMap("message", missingUploadFileMessage);
     public static Map<String, String> errorUploadFileTypeCSVResponse = Collections.singletonMap("message", errorUploadFileTypeCSVMessage);
+    public static Map<String, String> errorUploadFileTypeJSONResponse = Collections.singletonMap("message", errorUploadFileTypeJSONMessage);
     public static Map<String, String> errorSavePasswordsResponse = Collections.singletonMap("message", errorSavePasswordsMessage);
 }
