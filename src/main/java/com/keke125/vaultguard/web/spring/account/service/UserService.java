@@ -41,4 +41,9 @@ public class UserService {
         return repository.findByUsername(userName);
     }
 
+    public boolean checkMainPassword(String username, String password) {
+        Optional<User> user = repository.findByUsername(username);
+        return user.filter(value -> passwordEncoder.matches(password, value.getHashedPassword())).isPresent();
+    }
+
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.keke125.vaultguard.web.spring.account.entity.User;
 import com.keke125.vaultguard.web.spring.account.response.UserIdentity;
+import com.keke125.vaultguard.web.spring.account.service.UserService;
 import com.keke125.vaultguard.web.spring.password.entity.Password;
 import com.keke125.vaultguard.web.spring.password.request.DeletePasswordRequest;
 import com.keke125.vaultguard.web.spring.password.request.SavePasswordRequest;
@@ -15,6 +16,7 @@ import jakarta.validation.Valid;
 import org.apache.tika.Tika;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -40,11 +42,13 @@ public class PasswordController {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Tika tika = new Tika();
     private final FileService fileService;
+    private final UserService userService;
 
-    public PasswordController(PasswordService passwordService, UserIdentity userIdentity, FileService fileService) {
+    public PasswordController(PasswordService passwordService, UserIdentity userIdentity, FileService fileService, UserService userService) {
         this.passwordService = passwordService;
         this.userIdentity = userIdentity;
         this.fileService = fileService;
+        this.userService = userService;
     }
 
     @PostMapping("/password")
@@ -78,13 +82,19 @@ public class PasswordController {
     }
 
     @GetMapping("/passwords")
-    public ResponseEntity<?> getAllPasswords(@RequestParam String type) {
+    public ResponseEntity<?> getAllPasswords(@RequestParam String type, @RequestHeader("mainPassword") Optional<String> header) {
         Optional<User> user = userIdentity.getCurrentUser();
         if (user.isEmpty()) {
             throw new UsernameNotFoundException(userNotFoundMessage);
         }
         List<Password> passwords = passwordService.findAllByUserUid(user.get().getUid());
         if (Objects.equals(type, "file")) {
+            if (header.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(mainPasswordNotFoundResponse);
+            }
+            if (!userService.checkMainPassword(user.get().getUsername(), header.get())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorMainPasswordResponse);
+            }
             ByteArrayResource resource;
             String fileName;
             try {

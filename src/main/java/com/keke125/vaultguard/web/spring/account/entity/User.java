@@ -30,6 +30,7 @@ public class User extends AbstractEntity implements UserDetails {
     @JsonIgnore
     @NotBlank(message = "請填寫密碼!")
     @Setter
+    @Getter
     private String hashedPassword;
 
     @JsonIgnore
