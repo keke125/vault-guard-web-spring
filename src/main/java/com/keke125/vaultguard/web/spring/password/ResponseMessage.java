@@ -17,6 +17,7 @@ public class ResponseMessage {
     public static String errorSavePasswordsMessage = "請檢查上傳檔案是否正確!";
     public static String errorMainPasswordMessage = "主密碼輸入錯誤!";
     public static String mainPasswordNotFoundMessage = "請輸入主密碼!";
+    public static String successDeletePasswordsMessage = "成功清空密碼庫";
     public static Map<String, String> successSavePasswordResponse = Collections.singletonMap("message", successSavePasswordMessage);
     public static Map<String, String> passwordDuplicatedResponse = Collections.singletonMap("message", passwordDuplicatedMessage);
     public static Map<String, String> passwordNotFoundResponse = Collections.singletonMap("message", passwordNotFoundMessage);
@@ -30,4 +31,5 @@ public class ResponseMessage {
     public static Map<String, String> errorSavePasswordsResponse = Collections.singletonMap("message", errorSavePasswordsMessage);
     public static Map<String, String> errorMainPasswordResponse = Collections.singletonMap("message", errorMainPasswordMessage);
     public static Map<String, String> mainPasswordNotFoundResponse = Collections.singletonMap("message", mainPasswordNotFoundMessage);
+    public static Map<String, String> successDeletePasswordsResponse = Collections.singletonMap("message", successDeletePasswordsMessage);
 }

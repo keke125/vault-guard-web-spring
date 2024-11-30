@@ -195,4 +195,20 @@ public class PasswordController {
             return ResponseEntity.badRequest().body(disallowedImportTypeResponse);
         }
     }
+
+    @DeleteMapping("/passwords")
+    public ResponseEntity<Map<String, String>> deletePasswords(@RequestHeader("mainPassword") Optional<String> header) {
+        Optional<User> user = userIdentity.getCurrentUser();
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException(userNotFoundMessage);
+        }
+        if (header.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(mainPasswordNotFoundResponse);
+        }
+        if (!userService.checkMainPassword(user.get().getUsername(), header.get())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorMainPasswordResponse);
+        }
+        passwordService.deletePasswords(user.get().getUid());
+        return ResponseEntity.ok(successDeletePasswordsResponse);
+    }
 }

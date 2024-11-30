@@ -13,4 +13,6 @@ public interface PasswordRepository extends JpaRepository<Password, String>, Jpa
     Optional<Password> findByUidAndUserUid(String uid, String userUid);
 
     Optional<Password> findByNameAndUsernameAndUserUid(String name, String username, String userUid);
+
+    void deleteAllByUserUid(String userUid);
 }

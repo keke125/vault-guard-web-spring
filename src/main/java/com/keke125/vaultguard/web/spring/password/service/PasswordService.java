@@ -6,6 +6,7 @@ import com.keke125.vaultguard.web.spring.password.repository.PasswordRepository;
 import com.keke125.vaultguard.web.spring.password.request.SavePasswordRequest;
 import com.keke125.vaultguard.web.spring.password.request.UpdatePasswordRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class PasswordService {
     private final PasswordRepository repository;
 
@@ -69,5 +71,9 @@ public class PasswordService {
     public void savePasswordByPassword(Password password, User user) {
         password.setUserUid(user.getUid());
         repository.save(password);
+    }
+
+    public void deletePasswords(String userUid) {
+        repository.deleteAllByUserUid(userUid);
     }
 }
