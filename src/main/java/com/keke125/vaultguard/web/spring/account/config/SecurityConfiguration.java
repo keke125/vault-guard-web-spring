@@ -59,7 +59,7 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable).authorizeHttpRequests(authorize -> authorize.requestMatchers(CorsUtils::isPreFlightRequest).permitAll().requestMatchers(HttpMethod.POST, "/api/v1/auth/log-in").permitAll().requestMatchers(HttpMethod.POST, "/api/v1/auth/sign-up").permitAll().anyRequest().authenticated()).addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class).sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http.csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable).authorizeHttpRequests(authorize -> authorize.requestMatchers(CorsUtils::isPreFlightRequest).permitAll().requestMatchers(HttpMethod.POST, "/api/v1/auth/log-in").permitAll().requestMatchers(HttpMethod.POST, "/api/v1/account/reset").permitAll().requestMatchers(HttpMethod.POST, "/api/v1/auth/sign-up").permitAll().anyRequest().authenticated()).addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class).sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
 
