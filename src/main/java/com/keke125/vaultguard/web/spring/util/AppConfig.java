@@ -14,5 +14,7 @@ public class AppConfig {
     // @Value("{security.password.encoder:argon2}")
     private String idForEncode;
     private String JWTKey;
+    private String sendFromName;
+    private String sendFromAddress;
 
 }
