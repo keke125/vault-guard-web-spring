@@ -7,8 +7,10 @@ import com.keke125.vaultguard.web.spring.account.response.UserIdentity;
 import com.keke125.vaultguard.web.spring.account.service.UserService;
 import com.keke125.vaultguard.web.spring.password.entity.Password;
 import com.keke125.vaultguard.web.spring.password.request.DeletePasswordRequest;
+import com.keke125.vaultguard.web.spring.password.request.DeletePasswordsRequest;
 import com.keke125.vaultguard.web.spring.password.request.SavePasswordRequest;
 import com.keke125.vaultguard.web.spring.password.request.UpdatePasswordRequest;
+import com.keke125.vaultguard.web.spring.password.response.DeletePasswordsResponse;
 import com.keke125.vaultguard.web.spring.password.response.SavePasswordsResponse;
 import com.keke125.vaultguard.web.spring.password.service.FileService;
 import com.keke125.vaultguard.web.spring.password.service.PasswordService;
@@ -196,8 +198,8 @@ public class PasswordController {
         }
     }
 
-    @DeleteMapping("/passwords")
-    public ResponseEntity<Map<String, String>> deletePasswords(@RequestHeader("mainPassword") Optional<String> header) {
+    @DeleteMapping("/vault")
+    public ResponseEntity<Map<String, String>> clearVault(@RequestHeader("mainPassword") Optional<String> header) {
         Optional<User> user = userIdentity.getCurrentUser();
         if (user.isEmpty()) {
             throw new UsernameNotFoundException(userNotFoundMessage);
@@ -210,5 +212,26 @@ public class PasswordController {
         }
         passwordService.deletePasswords(user.get().getUid());
         return ResponseEntity.ok(successDeletePasswordsResponse);
+    }
+
+    @PostMapping("/delete-passwords")
+    public ResponseEntity<DeletePasswordsResponse> deletePasswords(@Valid @RequestBody DeletePasswordsRequest request) {
+        Optional<User> user = userIdentity.getCurrentUser();
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException(userNotFoundMessage);
+        }
+        int successCnt = 0;
+        int failedCnt = 0;
+        List<String> passwordUidList = request.getPasswordUidList();
+        for (String passwordUid : passwordUidList) {
+            Optional<Password> deletedPassword = passwordService.findByUidAndUserUid(passwordUid, user.get().getUid());
+            if (deletedPassword.isEmpty()) {
+                failedCnt++;
+                continue;
+            }
+            passwordService.deletePassword(deletedPassword.get());
+            successCnt += 1;
+        }
+        return ResponseEntity.ok(new DeletePasswordsResponse(successCnt, failedCnt));
     }
 }
