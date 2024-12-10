@@ -17,7 +17,7 @@ public class ResponseMessage {
     public static String emptyEmailMessage = "請填寫新的電子信箱!";
     public static String successSendResetPasswordMessage = "已寄出重設密碼確認信至您的信箱，請點擊確認信內的連結完成重設";
     public static String successFinishedResetMessage = "已成功重設密碼，將跳轉至登入頁面";
-    public static String failedFinishedResetMessage = "重設連結無效或已過期，請至忘記密碼頁面重新取得!";
+    public static String failedFinishedResetMessage = "重設連結無效或已過期，請至重設密碼頁面重新取得!";
     public static Map<String, String> successSignupResponse = Collections.singletonMap("message", successSignupMessage);
     public static Map<String, String> successUpdateResponse = Collections.singletonMap("message", successUpdateMessage);
     public static Map<String, String> usernameDuplicatedResponse = Collections.singletonMap("message", usernameDuplicatedMessage);

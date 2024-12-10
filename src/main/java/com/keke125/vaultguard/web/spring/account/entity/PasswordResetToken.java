@@ -4,6 +4,7 @@ import com.keke125.vaultguard.web.spring.util.AbstractEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.*;
 
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Setter
 @Getter
+@Table(name = "password_reset_token")
 public class PasswordResetToken extends AbstractEntity {
 
     // 30 min
