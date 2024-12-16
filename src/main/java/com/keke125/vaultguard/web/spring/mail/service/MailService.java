@@ -35,7 +35,7 @@ public class MailService {
                             + "若您需要重設密碼，請輸入以下驗證碼：\n\n"
                             + token + "\n\n"
                             + "或點擊以下連結" + "\n\n"
-                            + "http://localhost:3000/reset-password/" + user.getEmail() + "?token=" + token + "\n\n"
+                            + appConfig.getWebUrl() + "/reset-password/" + user.getEmail() + "?token=" + token + "\n\n"
                             + "驗證碼及連結將在30分鐘後失效。請盡快完成重設。\n\n"
                             + "若有任何疑問，請隨時聯繫我們(info@vault.keke125.com)。\n\n"
                             + "感謝您使用我們的服務，Vault Guard Web 團隊敬上。"
