@@ -11,6 +11,13 @@ env:
   VGW_DB_URL: 'jdbc:mariadb://localhost:3306/VGW'
   VGW_DB_USER: 'VGW'
   VGW_DB_PASSWORD: 'VGW'
+  VGW_JWT_KEY: 'VGW'
+  VGW_MAIL_PROVIDER: 'mail.example.com'
+  VGW_MAIL_USER: 'info@example.com'
+  VGW_MAIL_PASSWORD: 'VGW'
+  VGW_MAIL_SENDER_NAME: 'VGW'
+  VGW_MAIL_SENDER_Address: 'info@example.com'
+  VGW_WEB_URL: 'http://localhost:3000'
   REGISTRY_IMAGE: keke125/vault-guard-web-spring
 
 jobs:
