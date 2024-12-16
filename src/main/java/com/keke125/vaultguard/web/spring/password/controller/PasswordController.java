@@ -100,7 +100,7 @@ public class PasswordController {
             ByteArrayResource resource;
             String fileName;
             try {
-                String jsonData = objectMapper.writeValueAsString(passwords);
+                String jsonData = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(passwords);
                 resource = new ByteArrayResource(jsonData.getBytes());
                 fileName = "vaultguard-" + LocalDateTime.now().format(formatter) + "-export.json";
             } catch (JsonProcessingException e) {
