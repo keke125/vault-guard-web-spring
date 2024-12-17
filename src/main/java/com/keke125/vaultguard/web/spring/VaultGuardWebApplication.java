@@ -20,7 +20,7 @@ public class VaultGuardWebApplication {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**").allowedOrigins("http://localhost:3000").allowedMethods("GET", "POST", "PATCH", "DELETE");
+                registry.addMapping("/api/**").allowedOrigins("http://localhost:3000","https://vault.keke125.com").allowedMethods("GET", "POST", "PATCH", "DELETE");
             }
         };
     }
