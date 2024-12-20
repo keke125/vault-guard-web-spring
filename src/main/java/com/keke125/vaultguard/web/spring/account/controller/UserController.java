@@ -43,6 +43,15 @@ public class UserController {
         return ResponseEntity.ok(user.get());
     }
 
+    @GetMapping("/email")
+    ResponseEntity<String> getEmailByJWT() {
+        Optional<User> user = userIdentity.getCurrentUser();
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException(userNotFoundMessage);
+        }
+        return ResponseEntity.ok(user.get().getEmail());
+    }
+
     @PatchMapping("/user")
     public ResponseEntity<Map<String, String>> updateUser(@RequestParam String type, @Valid @RequestBody UpdateUserRequest request) {
         Optional<User> user = userIdentity.getCurrentUser();
