@@ -8,15 +8,11 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 public class AppConfig {
-
-    // default password encoder can be set by idForEncode
-    // BCrypt pbkdf2 argon2
+    // View the src/main/resources/application.properties file for more details
     private String idForEncode;
     private String JWTKey;
+    private String JWTIssuer;
     private String sendFromName;
     private String sendFromAddress;
-    // web url
-    // http://localhost:3000
     private String webUrl;
-
 }
