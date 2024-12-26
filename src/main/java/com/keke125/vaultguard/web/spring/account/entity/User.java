@@ -33,9 +33,6 @@ public class User extends AbstractEntity implements UserDetails {
     @Getter
     private String hashedPassword;
 
-    @JsonIgnore
-    private String password;
-
     @NotBlank(message = "請填寫電子信箱!")
     @Email(message = "電子信箱格式錯誤!")
     @Column(unique = true)
@@ -67,6 +64,10 @@ public class User extends AbstractEntity implements UserDetails {
     @Setter
     @JsonIgnore
     private Set<Role> roles;
+
+    @Getter
+    @Setter
+    private String activateAccountToken;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

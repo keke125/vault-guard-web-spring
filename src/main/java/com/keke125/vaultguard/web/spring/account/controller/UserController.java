@@ -2,6 +2,7 @@ package com.keke125.vaultguard.web.spring.account.controller;
 
 import com.keke125.vaultguard.web.spring.account.entity.PasswordResetToken;
 import com.keke125.vaultguard.web.spring.account.entity.User;
+import com.keke125.vaultguard.web.spring.account.request.ActivateAccountRequest;
 import com.keke125.vaultguard.web.spring.account.request.ResetPasswordRequest;
 import com.keke125.vaultguard.web.spring.account.request.UpdateUserRequest;
 import com.keke125.vaultguard.web.spring.account.response.UserIdentity;
@@ -112,6 +113,29 @@ public class UserController {
             }
             mailService.sendMailResetPassword(user.get(), token);
             return ResponseEntity.ok(successSendResetPasswordResponse);
+        }
+    }
+
+    @PostMapping("/activate-account")
+    public ResponseEntity<Map<String, String>> activateAccountByEmail(@Valid @RequestBody ActivateAccountRequest request) {
+        Optional<User> user = userService.findByEmail(request.getEmail());
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException(userNotFoundMessage);
+        }
+        if (user.get().isEnabled()) {
+            return ResponseEntity.badRequest().body(alreadyActivatedAccountResponse);
+        }
+        if (request.getToken() != null) {
+            if (Objects.equals(user.get().getActivateAccountToken(), request.getToken())) {
+                user.get().setEnabled(true);
+                userService.update(user.get());
+                return ResponseEntity.ok(successFinishedActivateAccountResponse);
+            } else {
+                return ResponseEntity.badRequest().body(failedFinishedActivateAccountResponse);
+            }
+        } else {
+            mailService.sendMailActivateAccount(user.get());
+            return ResponseEntity.ok(successSendActivateAccountResponse);
         }
     }
 

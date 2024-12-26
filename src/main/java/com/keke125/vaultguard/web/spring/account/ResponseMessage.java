@@ -18,6 +18,10 @@ public class ResponseMessage {
     public static String successSendResetPasswordMessage = "已寄出重設密碼確認信至您的信箱，請點擊確認信內的連結完成重設";
     public static String successFinishedResetMessage = "已成功重設密碼，將跳轉至登入頁面";
     public static String failedFinishedResetMessage = "重設連結無效或已過期，請至重設密碼頁面重新取得!";
+    public static String successSendActivateAccountMessage = "已寄出啟用帳號確認信至您的信箱，請點擊確認信內的連結完成啟用";
+    public static String successFinishedActivateAccountMessage = "已成功啟用帳號，將跳轉至登入頁面";
+    public static String failedFinishedActivateAccountMessage = "啟用連結無效或已過期，請至啟用帳號頁面重新取得!";
+    public static String alreadyActivatedAccountMessage = "您的帳號已於先前啟用，無須重複啟用!";
     public static Map<String, String> successSignupResponse = Collections.singletonMap("message", successSignupMessage);
     public static Map<String, String> successUpdateResponse = Collections.singletonMap("message", successUpdateMessage);
     public static Map<String, String> usernameDuplicatedResponse = Collections.singletonMap("message", usernameDuplicatedMessage);
@@ -31,4 +35,8 @@ public class ResponseMessage {
     public static Map<String, String> successSendResetPasswordResponse = Collections.singletonMap("message", successSendResetPasswordMessage);
     public static Map<String, String> successFinishedResetResponse = Collections.singletonMap("message", successFinishedResetMessage);
     public static Map<String, String> failedFinishedResetResponse = Collections.singletonMap("message", failedFinishedResetMessage);
+    public static Map<String, String> successSendActivateAccountResponse = Collections.singletonMap("message", successSendActivateAccountMessage);
+    public static Map<String, String> successFinishedActivateAccountResponse = Collections.singletonMap("message", successFinishedActivateAccountMessage);
+    public static Map<String, String> failedFinishedActivateAccountResponse = Collections.singletonMap("message", failedFinishedActivateAccountMessage);
+    public static Map<String, String> alreadyActivatedAccountResponse = Collections.singletonMap("message", alreadyActivatedAccountMessage);
 }

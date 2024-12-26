@@ -45,7 +45,8 @@ public class AuthController {
         HashSet<Role> roles = new HashSet<>();
         roles.add(Role.USER);
         newUser.setRoles(roles);
-        newUser.setEnabled(true);
+        newUser.setEnabled(false);
+        newUser.setActivateAccountToken(UUID.randomUUID().toString());
         newUser.setAccountNonExpired(true);
         newUser.setAccountNonLocked(true);
         newUser.setCredentialsNonExpired(true);
