@@ -6,6 +6,7 @@ import com.keke125.vaultguard.web.spring.account.request.AuthRequest;
 import com.keke125.vaultguard.web.spring.account.request.SignupRequest;
 import com.keke125.vaultguard.web.spring.account.service.JWTService;
 import com.keke125.vaultguard.web.spring.account.service.UserService;
+import com.keke125.vaultguard.web.spring.mail.service.MailService;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +21,11 @@ import static com.keke125.vaultguard.web.spring.account.ResponseMessage.*;
 public class AuthController {
 
     private final UserService userService;
+    private final MailService mailService;
 
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, MailService mailService) {
         this.userService = userService;
+        this.mailService = mailService;
     }
 
 
@@ -59,6 +62,7 @@ public class AuthController {
         if (!userService.isEmailNonExist(request.getEmail())) {
             return ResponseEntity.badRequest().body(emailDuplicatedResponse);
         }
+        mailService.sendMailActivateAccount(newUser);
         userService.store(newUser);
         return ResponseEntity.ok(successSignupResponse);
     }
