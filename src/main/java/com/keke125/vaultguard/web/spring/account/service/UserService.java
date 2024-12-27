@@ -1,8 +1,9 @@
 package com.keke125.vaultguard.web.spring.account.service;
 
-import com.keke125.vaultguard.web.spring.account.entity.PasswordResetToken;
+import com.keke125.vaultguard.web.spring.account.entity.VerificationCode;
 import com.keke125.vaultguard.web.spring.account.entity.User;
-import com.keke125.vaultguard.web.spring.account.repository.PasswordResetTokenRepository;
+import com.keke125.vaultguard.web.spring.account.entity.VerificationType;
+import com.keke125.vaultguard.web.spring.account.repository.VerificationCodeRepository;
 import com.keke125.vaultguard.web.spring.account.repository.UserRepository;
 import lombok.Getter;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,14 +16,14 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final VerificationCodeRepository verificationCodeRepository;
 
     @Getter
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordResetTokenRepository passwordResetTokenRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, VerificationCodeRepository verificationCodeRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.passwordResetTokenRepository = passwordResetTokenRepository;
+        this.verificationCodeRepository = verificationCodeRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -55,34 +56,26 @@ public class UserService {
         return user.filter(value -> passwordEncoder.matches(password, value.getHashedPassword())).isPresent();
     }
 
-    public void createPasswordResetTokenForUser(User user, String token) {
+    public void createOrUpdateVerificationCode(User user, String token, Optional<VerificationCode> verificationCode, VerificationType type) {
         Date now = new Date();
-        PasswordResetToken passwordResetToken = new PasswordResetToken();
-        Date expiryDate = new Date(now.getTime() + PasswordResetToken.EXPIRATION * 1000);
-        passwordResetToken.setUser(user);
-        passwordResetToken.setToken(token);
-        passwordResetToken.setExpiryDate(expiryDate);
-        passwordResetToken.setValid(true);
-        passwordResetTokenRepository.save(passwordResetToken);
+        VerificationCode newVerificationCode;
+        newVerificationCode = verificationCode.orElseGet(VerificationCode::new);
+        Date expiryDate = new Date(now.getTime() + VerificationCode.EXPIRATION * 1000);
+        newVerificationCode.setUser(user);
+        newVerificationCode.setToken(token);
+        newVerificationCode.setExpiryDate(expiryDate);
+        newVerificationCode.setValid(true);
+        newVerificationCode.setVerificationType(type);
+        verificationCodeRepository.save(newVerificationCode);
     }
 
-    public void updatePasswordResetTokenForUser(User user, String token, PasswordResetToken passwordResetToken) {
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + PasswordResetToken.EXPIRATION * 1000);
-        passwordResetToken.setUser(user);
-        passwordResetToken.setToken(token);
-        passwordResetToken.setExpiryDate(expiryDate);
-        passwordResetToken.setValid(true);
-        passwordResetTokenRepository.save(passwordResetToken);
+    public boolean validateVerificationCode(User user, String token, VerificationType type) {
+        Optional<VerificationCode> verificationCode = verificationCodeRepository.findByUserAndTokenAndIsValidAndVerificationType(user, token, true, type);
+        verificationCode.ifPresent(code -> code.setValid(false));
+        return verificationCode.map(code -> code.getExpiryDate().after(new Date())).orElse(false);
     }
 
-    public boolean validatePasswordResetToken(User user, String token) {
-        Optional<PasswordResetToken> passwordResetToken = passwordResetTokenRepository.findByUserAndTokenAndIsValid(user, token, true);
-        passwordResetToken.ifPresent(resetToken -> resetToken.setValid(false));
-        return passwordResetToken.map(resetToken -> resetToken.getExpiryDate().after(new Date())).orElse(false);
-    }
-
-    public Optional<PasswordResetToken> findPasswordResetTokenByUser(User user) {
-        return passwordResetTokenRepository.findByUser(user);
+    public Optional<VerificationCode> findVerificationCodeByUserAndVerificationType(User user, VerificationType type) {
+        return verificationCodeRepository.findByUserAndVerificationType(user, type);
     }
 }

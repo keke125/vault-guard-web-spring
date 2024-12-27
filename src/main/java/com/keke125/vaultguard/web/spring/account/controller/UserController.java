@@ -1,7 +1,8 @@
 package com.keke125.vaultguard.web.spring.account.controller;
 
-import com.keke125.vaultguard.web.spring.account.entity.PasswordResetToken;
+import com.keke125.vaultguard.web.spring.account.entity.VerificationCode;
 import com.keke125.vaultguard.web.spring.account.entity.User;
+import com.keke125.vaultguard.web.spring.account.entity.VerificationType;
 import com.keke125.vaultguard.web.spring.account.request.ActivateAccountRequest;
 import com.keke125.vaultguard.web.spring.account.request.ResetPasswordRequest;
 import com.keke125.vaultguard.web.spring.account.request.UpdateUserRequest;
@@ -13,6 +14,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
@@ -87,14 +89,17 @@ public class UserController {
         return ResponseEntity.ok(successUpdateResponse);
     }
 
-    @PostMapping("/reset")
+    @PostMapping("/reset-password")
     ResponseEntity<Map<String, String>> resetPasswordByEmail(@Valid @RequestBody ResetPasswordRequest request) {
         Optional<User> user = userService.findByEmail(request.getEmail());
         if (user.isEmpty()) {
             throw new UsernameNotFoundException(userNotFoundMessage);
         }
+        if (!user.get().isEnabled()) {
+            throw new DisabledException(userDisabledMessage);
+        }
         if (request.getToken() != null) {
-            if (userService.validatePasswordResetToken(user.get(), request.getToken())) {
+            if (userService.validateVerificationCode(user.get(), request.getToken(), VerificationType.RESET_PASSWORD)) {
                 ResponseEntity<Map<String, String>> checkMainPasswordResponse = checkMainPassword(request.getNewPassword());
                 if (checkMainPasswordResponse != null) return checkMainPasswordResponse;
                 user.get().setHashedPassword(userService.getPasswordEncoder().encode(request.getNewPassword()));
@@ -104,13 +109,9 @@ public class UserController {
                 return ResponseEntity.badRequest().body(failedFinishedResetResponse);
             }
         } else {
-            Optional<PasswordResetToken> passwordResetToken = userService.findPasswordResetTokenByUser(user.get());
+            Optional<VerificationCode> verificationCode = userService.findVerificationCodeByUserAndVerificationType(user.get(), VerificationType.RESET_PASSWORD);
             String token = UUID.randomUUID().toString();
-            if (passwordResetToken.isPresent()) {
-                userService.updatePasswordResetTokenForUser(user.get(), token, passwordResetToken.get());
-            } else {
-                userService.createPasswordResetTokenForUser(user.get(), token);
-            }
+            userService.createOrUpdateVerificationCode(user.get(), token, verificationCode, VerificationType.RESET_PASSWORD);
             mailService.sendMailResetPassword(user.get(), token);
             return ResponseEntity.ok(successSendResetPasswordResponse);
         }

@@ -11,6 +11,7 @@ public class ResponseMessage {
     public static String emailAndUsernameDuplicatedMessage = "輸入的帳號及電子信箱皆已被使用!";
     public static String passwordLengthRangeMessage = "密碼長度必須在8-128字元之間!";
     public static String userNotFoundMessage = "找不到使用者，請先註冊或重新登入!";
+    public static String userDisabledMessage = "帳號未啟用，請先啟用帳號!";
     public static String disallowedUpdateUserTypeMessage = "不允許的更新使用者的類型!";
     public static String emptyPasswordMessage = "請填寫主密碼!";
     public static String emptyNewPasswordMessage = "請填寫新的主密碼!";
