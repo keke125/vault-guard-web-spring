@@ -1,6 +1,7 @@
 package com.keke125.vaultguard.web.spring.account.config;
 
 import com.keke125.vaultguard.web.spring.util.AppConfig;
+import com.keke125.vaultguard.web.spring.util.DelegatedAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -59,7 +60,7 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable).authorizeHttpRequests(authorize -> authorize.requestMatchers(CorsUtils::isPreFlightRequest).permitAll().requestMatchers(HttpMethod.POST, "/api/v1/auth/log-in", "/api/v1/auth/sign-up","/api/v1/account/reset","/api/v1/account/activate-account").permitAll().requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/v3/api-docs/**").permitAll().anyRequest().authenticated()).addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class).sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http.csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable).authorizeHttpRequests(authorize -> authorize.requestMatchers(CorsUtils::isPreFlightRequest).permitAll().requestMatchers(HttpMethod.POST, "/api/v1/auth/log-in", "/api/v1/auth/sign-up", "/api/v1/account/reset-password", "/api/v1/account/activate-account").permitAll().requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/v3/api-docs/**").permitAll().anyRequest().authenticated()).addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class).sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).exceptionHandling((exception) -> exception.authenticationEntryPoint(new DelegatedAuthenticationEntryPoint()));
         return http.build();
     }
 
