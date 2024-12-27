@@ -24,7 +24,7 @@ public class VerificationCode extends AbstractEntity {
 
     private Date expiryDate;
 
-    private boolean isValid;
+    private boolean valid;
 
     private VerificationType verificationType;
 }

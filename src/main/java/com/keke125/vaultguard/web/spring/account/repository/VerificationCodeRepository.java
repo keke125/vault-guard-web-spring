@@ -11,7 +11,8 @@ import java.util.Optional;
 
 @Repository
 public interface VerificationCodeRepository extends JpaRepository<VerificationCode, String>, JpaSpecificationExecutor<VerificationCode> {
-    Optional<VerificationCode> findByUserAndTokenAndIsValidAndVerificationType(User user, String token, boolean isValid, VerificationType verificationType);
+    Optional<VerificationCode> findByUserAndTokenAndValidAndVerificationType(User user, String token, boolean valid,
+                                                                             VerificationType verificationType);
 
     Optional<VerificationCode> findByUserAndVerificationType(User user, VerificationType verificationType);
 }

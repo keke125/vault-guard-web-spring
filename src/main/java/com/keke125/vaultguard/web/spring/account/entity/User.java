@@ -47,15 +47,15 @@ public class User extends AbstractEntity implements UserDetails {
     @Setter
     @Getter
     @JsonIgnore
-    private boolean isAccountNonExpired;
+    private boolean accountNonExpired;
     @Setter
     @Getter
     @JsonIgnore
-    private boolean isAccountNonLocked;
+    private boolean accountNonLocked;
     @Setter
     @Getter
     @JsonIgnore
-    private boolean isCredentialsNonExpired;
+    private boolean credentialsNonExpired;
 
     @NotNull
     @Enumerated(EnumType.STRING)

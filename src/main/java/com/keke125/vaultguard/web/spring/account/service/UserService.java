@@ -70,7 +70,7 @@ public class UserService {
     }
 
     public boolean validateVerificationCode(User user, String token, VerificationType type) {
-        Optional<VerificationCode> verificationCode = verificationCodeRepository.findByUserAndTokenAndIsValidAndVerificationType(user, token, true, type);
+        Optional<VerificationCode> verificationCode = verificationCodeRepository.findByUserAndTokenAndValidAndVerificationType(user, token, true, type);
         verificationCode.ifPresent(code -> code.setValid(false));
         return verificationCode.map(code -> code.getExpiryDate().after(new Date())).orElse(false);
     }
