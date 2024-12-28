@@ -23,6 +23,7 @@ public class ResponseMessage {
     public static String successFinishedActivateAccountMessage = "已成功啟用帳號，將跳轉至登入頁面";
     public static String failedFinishedActivateAccountMessage = "啟用連結無效或已過期，請至啟用帳號頁面重新取得!";
     public static String alreadyActivatedAccountMessage = "您的帳號已於先前啟用，無須重複啟用!";
+    public static String failedSendVerificationCodeMessage = "曾於3分鐘內寄出確認信，請稍後再試!";
     public static Map<String, String> successSignupResponse = Collections.singletonMap("message", successSignupMessage);
     public static Map<String, String> successUpdateResponse = Collections.singletonMap("message", successUpdateMessage);
     public static Map<String, String> usernameDuplicatedResponse = Collections.singletonMap("message", usernameDuplicatedMessage);
@@ -40,4 +41,5 @@ public class ResponseMessage {
     public static Map<String, String> successFinishedActivateAccountResponse = Collections.singletonMap("message", successFinishedActivateAccountMessage);
     public static Map<String, String> failedFinishedActivateAccountResponse = Collections.singletonMap("message", failedFinishedActivateAccountMessage);
     public static Map<String, String> alreadyActivatedAccountResponse = Collections.singletonMap("message", alreadyActivatedAccountMessage);
+    public static Map<String, String> failedSendVerificationCodeResponse = Collections.singletonMap("message", failedSendVerificationCodeMessage);
 }

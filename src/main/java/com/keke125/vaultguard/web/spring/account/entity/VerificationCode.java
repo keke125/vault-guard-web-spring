@@ -4,7 +4,7 @@ import com.keke125.vaultguard.web.spring.util.AbstractEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
@@ -15,14 +15,16 @@ import java.util.Date;
 public class VerificationCode extends AbstractEntity {
 
     // 30 min
-    public static final int EXPIRATION = 30 * 60;
+    public static final int VERIFICATION_CODE_EXPIRATION = 30;
+    // 3 min
+    public static final int SEND_VERIFICATION_CODE_PERIOD = 3;
 
     private String token;
 
     @ManyToOne
     private User user;
 
-    private Date expiryDate;
+    private LocalDateTime expiryDate;
 
     private boolean valid;
 

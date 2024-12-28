@@ -18,6 +18,8 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.keke125.vaultguard.web.spring.account.ResponseMessage.*;
@@ -109,6 +111,9 @@ public class UserController {
                 return ResponseEntity.badRequest().body(failedFinishedResetResponse);
             }
         } else {
+            ResponseEntity<Map<String, String>> failedSendVerificationCodeResponse = checkSendVerificationCodePeriod(user.get());
+            if (failedSendVerificationCodeResponse != null) return failedSendVerificationCodeResponse;
+            updateUserVerificationCodePeriod(user.get());
             Optional<VerificationCode> verificationCode = userService.findVerificationCodeByUserAndVerificationType(user.get(), VerificationType.RESET_PASSWORD);
             String token = UUID.randomUUID().toString();
             userService.createOrUpdateVerificationCode(user.get(), token, verificationCode, VerificationType.RESET_PASSWORD);
@@ -135,9 +140,27 @@ public class UserController {
                 return ResponseEntity.badRequest().body(failedFinishedActivateAccountResponse);
             }
         } else {
+            ResponseEntity<Map<String, String>> failedSendVerificationCodeResponse1 = checkSendVerificationCodePeriod(user.get());
+            if (failedSendVerificationCodeResponse1 != null) return failedSendVerificationCodeResponse1;
+            updateUserVerificationCodePeriod(user.get());
             mailService.sendMailActivateAccount(user.get());
             return ResponseEntity.ok(successSendActivateAccountResponse);
         }
+    }
+
+    private void updateUserVerificationCodePeriod(User user) {
+        user.setLastSendVerificationCodeDate(LocalDateTime.now());
+        userService.update(user);
+    }
+
+    private static ResponseEntity<Map<String, String>> checkSendVerificationCodePeriod(User user) {
+        if (user.getLastSendVerificationCodeDate() != null) {
+            Duration duration = Duration.between(user.getLastSendVerificationCodeDate(), LocalDateTime.now());
+            if (duration.toMinutes() < VerificationCode.SEND_VERIFICATION_CODE_PERIOD) {
+                return ResponseEntity.badRequest().body(failedSendVerificationCodeResponse);
+            }
+        }
+        return null;
     }
 
     private static ResponseEntity<Map<String, String>> checkMainPassword(String newPassword) {

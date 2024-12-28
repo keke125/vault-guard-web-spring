@@ -9,7 +9,7 @@ import lombok.Getter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -57,10 +57,10 @@ public class UserService {
     }
 
     public void createOrUpdateVerificationCode(User user, String token, Optional<VerificationCode> verificationCode, VerificationType type) {
-        Date now = new Date();
         VerificationCode newVerificationCode;
         newVerificationCode = verificationCode.orElseGet(VerificationCode::new);
-        Date expiryDate = new Date(now.getTime() + VerificationCode.EXPIRATION * 1000);
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime expiryDate = now.plusMinutes(VerificationCode.VERIFICATION_CODE_EXPIRATION);
         newVerificationCode.setUser(user);
         newVerificationCode.setToken(token);
         newVerificationCode.setExpiryDate(expiryDate);
@@ -72,7 +72,7 @@ public class UserService {
     public boolean validateVerificationCode(User user, String token, VerificationType type) {
         Optional<VerificationCode> verificationCode = verificationCodeRepository.findByUserAndTokenAndValidAndVerificationType(user, token, true, type);
         verificationCode.ifPresent(code -> code.setValid(false));
-        return verificationCode.map(code -> code.getExpiryDate().after(new Date())).orElse(false);
+        return verificationCode.map(code -> code.getExpiryDate().isAfter(LocalDateTime.now())).orElse(false);
     }
 
     public Optional<VerificationCode> findVerificationCodeByUserAndVerificationType(User user, VerificationType type) {

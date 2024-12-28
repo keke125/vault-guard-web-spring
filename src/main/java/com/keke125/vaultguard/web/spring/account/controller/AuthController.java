@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.keke125.vaultguard.web.spring.account.ResponseMessage.*;
@@ -53,6 +54,7 @@ public class AuthController {
         newUser.setAccountNonExpired(true);
         newUser.setAccountNonLocked(true);
         newUser.setCredentialsNonExpired(true);
+        newUser.setLastSendVerificationCodeDate(LocalDateTime.now());
         if (!userService.isUsernameNonExist(request.getUsername())) {
             if (!userService.isEmailNonExist(request.getEmail())) {
                 return ResponseEntity.badRequest().body(emailAndUsernameDuplicatedResponse);

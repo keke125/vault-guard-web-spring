@@ -22,7 +22,7 @@ public class MailService {
         this.appConfig = appConfig;
     }
 
-    protected void sendMail(String email, String subject, String text) {
+    private void sendMail(String email, String subject, String text) {
 
         MimeMessagePreparator preparator = mimeMessage -> {
             mimeMessage.setSubject(subject, "UTF-8");
