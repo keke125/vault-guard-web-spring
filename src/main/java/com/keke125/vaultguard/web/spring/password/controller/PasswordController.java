@@ -92,10 +92,10 @@ public class PasswordController {
         List<Password> passwords = passwordService.findAllByUserUid(user.get().getUid());
         if (Objects.equals(type, "file")) {
             if (header.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(mainPasswordNotFoundResponse);
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(mainPasswordNotFoundResponse);
             }
             if (!userService.checkMainPassword(user.get().getUsername(), header.get())) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorMainPasswordResponse);
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMainPasswordResponse);
             }
             ByteArrayResource resource;
             String fileName;
@@ -205,10 +205,10 @@ public class PasswordController {
             throw new UsernameNotFoundException(userNotFoundMessage);
         }
         if (header.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(mainPasswordNotFoundResponse);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(mainPasswordNotFoundResponse);
         }
         if (!userService.checkMainPassword(user.get().getUsername(), header.get())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorMainPasswordResponse);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMainPasswordResponse);
         }
         passwordService.deletePasswords(user.get().getUid());
         return ResponseEntity.ok(successDeletePasswordsResponse);

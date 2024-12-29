@@ -69,7 +69,7 @@ public class UserController {
         }
 
         if (!userService.checkMainPassword(user.get().getUsername(), request.getOldPassword())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorMainPasswordResponse);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMainPasswordResponse);
         }
 
         if (Objects.equals(type, "password")) {
