@@ -93,3 +93,7 @@ Vault Guard Web 為免費且開放原始碼的網頁應用程式，提供使用�
 * 效能 - 在 Google Lighthouse 獲得滿分成績。
 ![Google Lighthouse結果](img/img_10.png)
 
+## 透過 Docker 部署
+
+請參考 [https://hub.docker.com/r/keke125/vault-guard-web-spring](https://hub.docker.com/r/keke125/vault-guard-web-spring)
+
