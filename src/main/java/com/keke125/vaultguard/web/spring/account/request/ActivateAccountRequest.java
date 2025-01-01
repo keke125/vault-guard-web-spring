@@ -17,5 +17,5 @@ public class ActivateAccountRequest {
     @Column(unique = true)
     private String email;
 
-    private String token;
+    private String verificationCode;
 }

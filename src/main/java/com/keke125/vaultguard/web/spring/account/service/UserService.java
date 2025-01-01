@@ -56,24 +56,24 @@ public class UserService {
         return user.filter(value -> passwordEncoder.matches(password, value.getHashedPassword())).isPresent();
     }
 
-    public void createOrUpdateVerificationCode(User user, String token, Optional<VerificationCode> verificationCode, VerificationType type) {
-        VerificationCode newVerificationCode = getVerificationCode(user, token, verificationCode, type);
+    public void createOrUpdateVerificationCode(User user, String code, Optional<VerificationCode> verificationCode, VerificationType type) {
+        VerificationCode newVerificationCode = getVerificationCode(user, code, verificationCode, type);
         verificationCodeRepository.save(newVerificationCode);
     }
 
-    public void createOrUpdateVerificationCode(User user, String token, Optional<VerificationCode> verificationCode, VerificationType type, String email) {
-        VerificationCode newVerificationCode = getVerificationCode(user, token, verificationCode, type);
+    public void createOrUpdateVerificationCode(User user, String code, Optional<VerificationCode> verificationCode, VerificationType type, String email) {
+        VerificationCode newVerificationCode = getVerificationCode(user, code, verificationCode, type);
         newVerificationCode.setEmail(email);
         verificationCodeRepository.save(newVerificationCode);
     }
 
-    private static VerificationCode getVerificationCode(User user, String token, Optional<VerificationCode> verificationCode, VerificationType type) {
+    private static VerificationCode getVerificationCode(User user, String code, Optional<VerificationCode> verificationCode, VerificationType type) {
         VerificationCode newVerificationCode;
         newVerificationCode = verificationCode.orElseGet(VerificationCode::new);
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime expiryDate = now.plusMinutes(VerificationCode.VERIFICATION_CODE_EXPIRATION);
         newVerificationCode.setUser(user);
-        newVerificationCode.setToken(token);
+        newVerificationCode.setCode(code);
         newVerificationCode.setExpiryDate(expiryDate);
         newVerificationCode.setValid(true);
         newVerificationCode.setVerificationType(type);
@@ -81,13 +81,13 @@ public class UserService {
     }
 
     public boolean validateVerificationCode(User user, String token, VerificationType type) {
-        Optional<VerificationCode> verificationCode = verificationCodeRepository.findByUserAndTokenAndValidAndVerificationType(user, token, true, type);
+        Optional<VerificationCode> verificationCode = verificationCodeRepository.findByUserAndCodeAndValidAndVerificationType(user, token, true, type);
         verificationCode.ifPresent(code -> code.setValid(false));
         return verificationCode.map(code -> code.getExpiryDate().isAfter(LocalDateTime.now())).orElse(false);
     }
 
     public boolean validateVerificationCode(User user, String token, VerificationType type, String email) {
-        Optional<VerificationCode> verificationCode = verificationCodeRepository.findByUserAndTokenAndValidAndVerificationType(user, token, true, type);
+        Optional<VerificationCode> verificationCode = verificationCodeRepository.findByUserAndCodeAndValidAndVerificationType(user, token, true, type);
         verificationCode.ifPresent(code -> code.setValid(false));
         return verificationCode.filter(code -> email.equals(code.getEmail())).map(code -> code.getExpiryDate().isAfter(LocalDateTime.now())).orElse(false);
     }

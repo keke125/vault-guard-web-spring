@@ -18,7 +18,7 @@ public class ResetPasswordRequest {
     @Column(unique = true)
     private String email;
 
-    private String token;
+    private String verificationCode;
 
     @Size(min = 8, max = 128, message = "主密碼長度必須在{min}-{max}字元之間!")
     private String newPassword;

@@ -19,7 +19,7 @@ public class VerificationCode extends AbstractEntity {
     // 3 min
     public static final int SEND_VERIFICATION_CODE_PERIOD = 3;
 
-    private String token;
+    private String code;
 
     @ManyToOne
     private User user;
