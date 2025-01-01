@@ -19,7 +19,6 @@ public class UpdateUserRequest {
     private String newPassword;
 
     @Email(message = "電子信箱格式錯誤!")
-    @Column(unique = true)
     private String newEmail;
 
     private String verificationCode;
