@@ -1,6 +1,5 @@
 package com.keke125.vaultguard.web.spring.account.request;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -19,7 +18,6 @@ public class UpdateUserRequest {
     private String newPassword;
 
     @Email(message = "電子信箱格式錯誤!")
-    @Column(unique = true)
     private String newEmail;
 
     private String verificationCode;
