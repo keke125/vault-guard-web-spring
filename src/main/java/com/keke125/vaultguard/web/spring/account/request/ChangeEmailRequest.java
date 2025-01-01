@@ -14,6 +14,7 @@ public class ChangeEmailRequest {
 
     @NotBlank(message = "請填寫電子信箱!")
     @Email(message = "電子信箱格式錯誤!")
+    @Column(unique = true)
     private String newEmail;
 
 }
