@@ -56,12 +56,12 @@ public class AuthController {
         newUser.setCredentialsNonExpired(true);
         newUser.setLastSendVerificationCodeDate(LocalDateTime.now());
         if (!userService.isUsernameNonExist(request.getUsername())) {
-            if (!userService.isEmailNonExist(request.getEmail())) {
+            if (userService.isEmailExist(request.getEmail())) {
                 return ResponseEntity.badRequest().body(emailAndUsernameDuplicatedResponse);
             }
             return ResponseEntity.badRequest().body(usernameDuplicatedResponse);
         }
-        if (!userService.isEmailNonExist(request.getEmail())) {
+        if (userService.isEmailExist(request.getEmail())) {
             return ResponseEntity.badRequest().body(emailDuplicatedResponse);
         }
         mailService.sendMailActivateAccount(newUser);

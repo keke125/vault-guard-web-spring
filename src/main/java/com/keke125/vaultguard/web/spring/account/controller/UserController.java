@@ -69,7 +69,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(emptyPasswordResponse);
         }
 
-        if (!userService.checkMainPassword(user.get().getUsername(), request.getOldPassword())) {
+        if (userService.isMainPasswordMismatch(user.get().getUsername(), request.getOldPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMainPasswordResponse);
         }
 
@@ -81,7 +81,7 @@ public class UserController {
             if (request.getNewEmail() == null) {
                 return ResponseEntity.badRequest().body(emptyEmailResponse);
             }
-            if (!userService.isEmailNonExist(request.getNewEmail()) && !Objects.equals(request.getNewEmail(), user.get().getEmail())) {
+            if (userService.isEmailExist(request.getNewEmail()) && !Objects.equals(request.getNewEmail(), user.get().getEmail())) {
                 return ResponseEntity.badRequest().body(emailDuplicatedResponse);
             }
             if (!userService.validateVerificationCode(user.get(), request.getVerificationCode(), VerificationType.CHANGE_EMAIL, request.getNewEmail())) {
@@ -159,7 +159,7 @@ public class UserController {
             throw new UsernameNotFoundException(userNotFoundMessage);
         }
 
-        if (!userService.isEmailNonExist(request.getNewEmail()) && !Objects.equals(request.getNewEmail(), user.get().getEmail())) {
+        if (userService.isEmailExist(request.getNewEmail()) && !Objects.equals(request.getNewEmail(), user.get().getEmail())) {
             return ResponseEntity.badRequest().body(emailDuplicatedResponse);
         }
 

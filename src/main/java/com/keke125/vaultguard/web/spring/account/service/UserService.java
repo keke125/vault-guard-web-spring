@@ -39,8 +39,8 @@ public class UserService {
         return userRepository.findByUsername(username).isEmpty();
     }
 
-    public boolean isEmailNonExist(String email) {
-        return userRepository.findAllByEmail(email).isEmpty();
+    public boolean isEmailExist(String email) {
+        return !userRepository.findAllByEmail(email).isEmpty();
     }
 
     public Optional<User> findByUsername(String userName) {
@@ -51,9 +51,9 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    public boolean checkMainPassword(String username, String password) {
+    public boolean isMainPasswordMismatch(String username, String password) {
         Optional<User> user = userRepository.findByUsername(username);
-        return user.filter(value -> passwordEncoder.matches(password, value.getHashedPassword())).isPresent();
+        return user.filter(value -> passwordEncoder.matches(password, value.getHashedPassword())).isEmpty();
     }
 
     public void createOrUpdateVerificationCode(User user, String code, Optional<VerificationCode> verificationCode, VerificationType type) {
