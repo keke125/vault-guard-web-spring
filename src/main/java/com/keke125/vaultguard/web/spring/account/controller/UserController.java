@@ -4,6 +4,7 @@ import com.keke125.vaultguard.web.spring.account.entity.VerificationCode;
 import com.keke125.vaultguard.web.spring.account.entity.User;
 import com.keke125.vaultguard.web.spring.account.entity.VerificationType;
 import com.keke125.vaultguard.web.spring.account.request.ActivateAccountRequest;
+import com.keke125.vaultguard.web.spring.account.request.ChangeEmailRequest;
 import com.keke125.vaultguard.web.spring.account.request.ResetPasswordRequest;
 import com.keke125.vaultguard.web.spring.account.request.UpdateUserRequest;
 import com.keke125.vaultguard.web.spring.account.response.UserIdentity;
@@ -77,13 +78,16 @@ public class UserController {
             if (checkMainPasswordResponse != null) return checkMainPasswordResponse;
             user.get().setHashedPassword(userService.getPasswordEncoder().encode(request.getNewPassword()));
         } else if (Objects.equals(type, "email")) {
-            if (request.getEmail() == null) {
+            if (request.getNewEmail() == null) {
                 return ResponseEntity.badRequest().body(emptyEmailResponse);
             }
-            if (!userService.isEmailNonExist(request.getEmail()) && !Objects.equals(request.getEmail(), user.get().getEmail())) {
+            if (!userService.isEmailNonExist(request.getNewEmail()) && !Objects.equals(request.getNewEmail(), user.get().getEmail())) {
                 return ResponseEntity.badRequest().body(emailDuplicatedResponse);
             }
-            user.get().setEmail(request.getEmail());
+            if (!userService.validateVerificationCode(user.get(), request.getVerificationCode(), VerificationType.CHANGE_EMAIL, request.getNewEmail())) {
+                return ResponseEntity.badRequest().body(failedFinishedChangeEmailResponse);
+            }
+            user.get().setEmail(request.getNewEmail());
         } else {
             return ResponseEntity.badRequest().body(disallowedUpdateUserTypeResponse);
         }
@@ -100,8 +104,8 @@ public class UserController {
         if (!user.get().isEnabled()) {
             throw new DisabledException(userDisabledMessage);
         }
-        if (request.getToken() != null) {
-            if (userService.validateVerificationCode(user.get(), request.getToken(), VerificationType.RESET_PASSWORD)) {
+        if (request.getVerificationCode() != null) {
+            if (userService.validateVerificationCode(user.get(), request.getVerificationCode(), VerificationType.RESET_PASSWORD)) {
                 ResponseEntity<Map<String, String>> checkMainPasswordResponse = checkMainPassword(request.getNewPassword());
                 if (checkMainPasswordResponse != null) return checkMainPasswordResponse;
                 user.get().setHashedPassword(userService.getPasswordEncoder().encode(request.getNewPassword()));
@@ -131,8 +135,8 @@ public class UserController {
         if (user.get().isEnabled()) {
             return ResponseEntity.badRequest().body(alreadyActivatedAccountResponse);
         }
-        if (request.getToken() != null) {
-            if (Objects.equals(user.get().getActivateAccountToken(), request.getToken())) {
+        if (request.getVerificationCode() != null) {
+            if (Objects.equals(user.get().getActivateAccountToken(), request.getVerificationCode())) {
                 user.get().setEnabled(true);
                 userService.update(user.get());
                 return ResponseEntity.ok(successFinishedActivateAccountResponse);
@@ -146,6 +150,27 @@ public class UserController {
             mailService.sendMailActivateAccount(user.get());
             return ResponseEntity.ok(successSendActivateAccountResponse);
         }
+    }
+
+    @PostMapping("/change-email")
+    ResponseEntity<Map<String, String>> changeEmail(@Valid @RequestBody ChangeEmailRequest request) {
+        Optional<User> user = userIdentity.getCurrentUser();
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException(userNotFoundMessage);
+        }
+
+        if (!userService.isEmailNonExist(request.getNewEmail()) && !Objects.equals(request.getNewEmail(), user.get().getEmail())) {
+            return ResponseEntity.badRequest().body(emailDuplicatedResponse);
+        }
+
+        ResponseEntity<Map<String, String>> failedSendVerificationCodeResponse = checkSendVerificationCodePeriod(user.get());
+        if (failedSendVerificationCodeResponse != null) return failedSendVerificationCodeResponse;
+        updateUserVerificationCodePeriod(user.get());
+        Optional<VerificationCode> verificationCode = userService.findVerificationCodeByUserAndVerificationType(user.get(), VerificationType.CHANGE_EMAIL);
+        String token = UUID.randomUUID().toString().split("-")[0];
+        userService.createOrUpdateVerificationCode(user.get(), token, verificationCode, VerificationType.CHANGE_EMAIL, request.getNewEmail());
+        mailService.sendMailChangeEmail(user.get(), request.getNewEmail(), token);
+        return ResponseEntity.ok(successSendChangeEmailResponse);
     }
 
     private void updateUserVerificationCodePeriod(User user) {

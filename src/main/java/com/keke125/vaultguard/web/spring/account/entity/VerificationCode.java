@@ -29,4 +29,6 @@ public class VerificationCode extends AbstractEntity {
     private boolean valid;
 
     private VerificationType verificationType;
+
+    private String email;
 }

@@ -67,4 +67,17 @@ public class MailService {
                         + "感謝您使用我們的服務，Vault Guard Web 團隊敬上。"
         );
     }
+
+    @Async
+    public void sendMailChangeEmail(User user, String newEmail, String token) {
+        sendMail(newEmail, "[Vault Guard Web] 修改電子信箱通知",
+                "親愛的 " + user.getUsername() + " 您好:\n\n"
+                        + "我們收到您修改電子信箱的申請。如果您沒有註冊本站帳號，請忽略此電子郵件。\n\n"
+                        + "若您需要修改電子信箱，請輸入以下驗證碼：\n\n"
+                        + token + "\n\n"
+                        + "驗證碼將在30分鐘後失效。請盡快完成修改。\n\n"
+                        + "若有任何疑問，請隨時聯繫我們(info@vault.keke125.com)。\n\n"
+                        + "感謝您使用我們的服務，Vault Guard Web 團隊敬上。"
+        );
+    }
 }
