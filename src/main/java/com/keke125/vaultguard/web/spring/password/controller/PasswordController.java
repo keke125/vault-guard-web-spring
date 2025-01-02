@@ -94,7 +94,7 @@ public class PasswordController {
             if (header.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(mainPasswordNotFoundResponse);
             }
-            if (userService.isMainPasswordMismatch(user.get().getUsername(), header.get())) {
+            if (userService.isMainPasswordMismatch(user.get().getUid(), header.get())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMainPasswordResponse);
             }
             ByteArrayResource resource;
@@ -207,7 +207,7 @@ public class PasswordController {
         if (header.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(mainPasswordNotFoundResponse);
         }
-        if (userService.isMainPasswordMismatch(user.get().getUsername(), header.get())) {
+        if (userService.isMainPasswordMismatch(user.get().getUid(), header.get())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMainPasswordResponse);
         }
         passwordService.deletePasswords(user.get().getUid());

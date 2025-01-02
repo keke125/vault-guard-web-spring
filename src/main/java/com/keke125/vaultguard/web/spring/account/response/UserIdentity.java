@@ -4,7 +4,6 @@ import com.keke125.vaultguard.web.spring.account.entity.User;
 import com.keke125.vaultguard.web.spring.account.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -19,8 +18,8 @@ public class UserIdentity {
 
     public Optional<User> getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails principal = (UserDetails) authentication.getPrincipal();
-        return userService.findByUsername(principal.getUsername());
+        User principal = (User) authentication.getPrincipal();
+        return userService.findByUserUid(principal.getUid());
     }
 
 }

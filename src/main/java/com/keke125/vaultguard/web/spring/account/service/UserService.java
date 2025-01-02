@@ -36,23 +36,27 @@ public class UserService {
     }
 
     public boolean isUsernameNonExist(String username) {
-        return userRepository.findByUsername(username).isEmpty();
+        return findByUsername(username).isEmpty();
     }
 
     public boolean isEmailExist(String email) {
         return !userRepository.findAllByEmail(email).isEmpty();
     }
 
-    public Optional<User> findByUsername(String userName) {
-        return userRepository.findByUsername(userName);
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    public Optional<User> findByUserUid(String userUid) {
+        return userRepository.findByUid(userUid);
     }
 
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
-    public boolean isMainPasswordMismatch(String username, String password) {
-        Optional<User> user = userRepository.findByUsername(username);
+    public boolean isMainPasswordMismatch(String userUid, String password) {
+        Optional<User> user = findByUserUid(userUid);
         return user.filter(value -> passwordEncoder.matches(password, value.getHashedPassword())).isEmpty();
     }
 

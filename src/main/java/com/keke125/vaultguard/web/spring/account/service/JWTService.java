@@ -1,6 +1,7 @@
 package com.keke125.vaultguard.web.spring.account.service;
 
 
+import com.keke125.vaultguard.web.spring.account.entity.User;
 import com.keke125.vaultguard.web.spring.account.request.AuthRequest;
 import com.keke125.vaultguard.web.spring.util.AppConfig;
 import io.jsonwebtoken.Claims;
@@ -12,7 +13,6 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -48,7 +48,7 @@ public class JWTService {
     public static String generateJWT(AuthRequest request) {
         Authentication authentication = new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
         authentication = authenticationManager.authenticate(authentication);
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        User userDetails = (User) authentication.getPrincipal();
         // millisecond
         // one day
         long expireTime = 1440 * 60 * 1000;
@@ -56,7 +56,7 @@ public class JWTService {
         Date expiration = new Date(current.getTime() + expireTime);
 
         SecretKey secretKey = getSigningKey();
-        return Jwts.builder().issuer(appConfig.getJWTIssuer()).subject(userDetails.getUsername()).expiration(expiration).notBefore(current).issuedAt(current).id(UUID.randomUUID().toString()).signWith(secretKey).compact();
+        return Jwts.builder().issuer(appConfig.getJWTIssuer()).subject(userDetails.getUid()).expiration(expiration).notBefore(current).issuedAt(current).id(UUID.randomUUID().toString()).signWith(secretKey).compact();
     }
 
     public static Jws<Claims> parseJWT(String jwt) {
@@ -64,7 +64,7 @@ public class JWTService {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(jwt);
     }
 
-    public static String validateTokenAndGetUsername(final String token) {
+    public static String validateTokenAndGetUserUid(final String token) {
         try {
             Jws<Claims> claims = JWTService.parseJWT(token);
             return claims.getPayload().getSubject();

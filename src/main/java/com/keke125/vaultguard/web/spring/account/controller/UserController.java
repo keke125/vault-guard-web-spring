@@ -58,6 +58,15 @@ public class UserController {
         return ResponseEntity.ok(user.get().getEmail());
     }
 
+    @GetMapping("/username")
+    ResponseEntity<String> getUsernameByJWT() {
+        Optional<User> user = userIdentity.getCurrentUser();
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException(userNotFoundMessage);
+        }
+        return ResponseEntity.ok(user.get().getUsername());
+    }
+
     @PatchMapping("/user")
     public ResponseEntity<Map<String, String>> updateUser(@RequestParam String type, @Valid @RequestBody UpdateUserRequest request) {
         Optional<User> user = userIdentity.getCurrentUser();
@@ -69,7 +78,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(emptyPasswordResponse);
         }
 
-        if (userService.isMainPasswordMismatch(user.get().getUsername(), request.getOldPassword())) {
+        if (userService.isMainPasswordMismatch(user.get().getUid(), request.getOldPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMainPasswordResponse);
         }
 

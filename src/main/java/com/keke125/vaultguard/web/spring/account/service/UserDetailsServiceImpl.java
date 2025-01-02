@@ -28,4 +28,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
     }
 
+    public UserDetails loadUserByUserUid(String userUid) throws UsernameNotFoundException {
+        Optional<User> user = userRepository.findByUid(userUid);
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw new UsernameNotFoundException("No user present with " + "userUid: " + userUid);
+        }
+    }
+
 }

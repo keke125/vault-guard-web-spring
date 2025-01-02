@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,7 +27,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         // Look for AUTHORIZATION
         final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (header == null || !header.startsWith("Bearer ")) {
@@ -35,8 +36,8 @@ public class JWTRequestFilter extends OncePerRequestFilter {
         }
 
         final String token = header.substring(7);
-        final String username = JWTService.validateTokenAndGetUsername(token);
-        if (username == null) {
+        final String userUid = JWTService.validateTokenAndGetUserUid(token);
+        if (userUid == null) {
             // Validation failed or token expired
             filterChain.doFilter(request, response);
             return;
@@ -44,7 +45,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
 
         try {
             // check if user exists
-            final UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(username);
+            final UserDetails userDetails = userDetailsServiceImpl.loadUserByUserUid(userUid);
             // Set user details on spring security context
             final UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
