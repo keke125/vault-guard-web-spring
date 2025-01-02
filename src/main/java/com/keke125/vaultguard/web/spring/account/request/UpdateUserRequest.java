@@ -21,4 +21,6 @@ public class UpdateUserRequest {
     private String newEmail;
 
     private String verificationCode;
+
+    private String newUsername;
 }

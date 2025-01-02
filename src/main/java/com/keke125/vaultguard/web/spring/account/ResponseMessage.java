@@ -16,6 +16,7 @@ public class ResponseMessage {
     public static String emptyPasswordMessage = "請填寫主密碼!";
     public static String emptyNewPasswordMessage = "請填寫新的主密碼!";
     public static String emptyEmailMessage = "請填寫新的電子信箱!";
+    public static String emptyUsernameMessage = "請填寫新的帳號!";
     public static String successSendResetPasswordMessage = "已寄出重設密碼確認信至您的信箱，請點擊確認信內的連結完成重設";
     public static String successFinishedResetMessage = "已成功重設密碼，將跳轉至登入頁面";
     public static String failedFinishedResetMessage = "重設連結無效或已過期，請至重設密碼頁面重新取得!";
@@ -36,6 +37,7 @@ public class ResponseMessage {
     public static Map<String, String> emptyPasswordResponse = Collections.singletonMap("message", emptyPasswordMessage);
     public static Map<String, String> emptyNewPasswordResponse = Collections.singletonMap("message", emptyNewPasswordMessage);
     public static Map<String, String> emptyEmailResponse = Collections.singletonMap("message", emptyEmailMessage);
+    public static Map<String, String> emptyUsernameResponse = Collections.singletonMap("message", emptyUsernameMessage);
     public static Map<String, String> successSendResetPasswordResponse = Collections.singletonMap("message", successSendResetPasswordMessage);
     public static Map<String, String> successFinishedResetResponse = Collections.singletonMap("message", successFinishedResetMessage);
     public static Map<String, String> failedFinishedResetResponse = Collections.singletonMap("message", failedFinishedResetMessage);

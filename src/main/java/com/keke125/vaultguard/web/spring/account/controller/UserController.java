@@ -82,23 +82,36 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMainPasswordResponse);
         }
 
-        if (Objects.equals(type, "password")) {
-            ResponseEntity<Map<String, String>> checkMainPasswordResponse = checkMainPassword(request.getNewPassword());
-            if (checkMainPasswordResponse != null) return checkMainPasswordResponse;
-            user.get().setHashedPassword(userService.getPasswordEncoder().encode(request.getNewPassword()));
-        } else if (Objects.equals(type, "email")) {
-            if (request.getNewEmail() == null) {
-                return ResponseEntity.badRequest().body(emptyEmailResponse);
+        switch (type) {
+            case "password" -> {
+                ResponseEntity<Map<String, String>> checkMainPasswordResponse = checkMainPassword(request.getNewPassword());
+                if (checkMainPasswordResponse != null) return checkMainPasswordResponse;
+                user.get().setHashedPassword(userService.getPasswordEncoder().encode(request.getNewPassword()));
             }
-            if (userService.isEmailExist(request.getNewEmail()) && !Objects.equals(request.getNewEmail(), user.get().getEmail())) {
-                return ResponseEntity.badRequest().body(emailDuplicatedResponse);
+            case "email" -> {
+                if (request.getNewEmail() == null) {
+                    return ResponseEntity.badRequest().body(emptyEmailResponse);
+                }
+                if (userService.isEmailExist(request.getNewEmail()) && !Objects.equals(request.getNewEmail(), user.get().getEmail())) {
+                    return ResponseEntity.badRequest().body(emailDuplicatedResponse);
+                }
+                if (!userService.validateVerificationCode(user.get(), request.getVerificationCode(), VerificationType.CHANGE_EMAIL, request.getNewEmail())) {
+                    return ResponseEntity.badRequest().body(failedFinishedChangeEmailResponse);
+                }
+                user.get().setEmail(request.getNewEmail());
             }
-            if (!userService.validateVerificationCode(user.get(), request.getVerificationCode(), VerificationType.CHANGE_EMAIL, request.getNewEmail())) {
-                return ResponseEntity.badRequest().body(failedFinishedChangeEmailResponse);
+            case "username" -> {
+                if (request.getNewUsername() == null) {
+                    return ResponseEntity.badRequest().body(emptyUsernameResponse);
+                }
+                if (!userService.isUsernameNonExist(request.getNewUsername()) && !Objects.equals(request.getNewUsername(), user.get().getUsername())) {
+                    return ResponseEntity.badRequest().body(usernameDuplicatedResponse);
+                }
+                user.get().setUsername(request.getNewUsername());
             }
-            user.get().setEmail(request.getNewEmail());
-        } else {
-            return ResponseEntity.badRequest().body(disallowedUpdateUserTypeResponse);
+            case null, default -> {
+                return ResponseEntity.badRequest().body(disallowedUpdateUserTypeResponse);
+            }
         }
         userService.update(user.get());
         return ResponseEntity.ok(successUpdateResponse);
