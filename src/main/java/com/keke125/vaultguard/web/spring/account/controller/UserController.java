@@ -3,10 +3,7 @@ package com.keke125.vaultguard.web.spring.account.controller;
 import com.keke125.vaultguard.web.spring.account.entity.VerificationCode;
 import com.keke125.vaultguard.web.spring.account.entity.User;
 import com.keke125.vaultguard.web.spring.account.entity.VerificationType;
-import com.keke125.vaultguard.web.spring.account.request.ActivateAccountRequest;
-import com.keke125.vaultguard.web.spring.account.request.ChangeEmailRequest;
-import com.keke125.vaultguard.web.spring.account.request.ResetPasswordRequest;
-import com.keke125.vaultguard.web.spring.account.request.UpdateUserRequest;
+import com.keke125.vaultguard.web.spring.account.request.*;
 import com.keke125.vaultguard.web.spring.account.response.UserIdentity;
 import com.keke125.vaultguard.web.spring.account.service.UserService;
 import com.keke125.vaultguard.web.spring.mail.service.MailService;
@@ -115,6 +112,26 @@ public class UserController {
         }
         userService.update(user.get());
         return ResponseEntity.ok(successUpdateResponse);
+    }
+
+    @DeleteMapping("/user")
+    public ResponseEntity<Map<String, String>> deleteUser(@Valid @RequestBody DeleteUserRequest request) {
+        Optional<User> user = userIdentity.getCurrentUser();
+
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException(userNotFoundMessage);
+        }
+
+        if (request.getOldPassword() == null) {
+            return ResponseEntity.badRequest().body(emptyPasswordResponse);
+        }
+
+        if (userService.isMainPasswordMismatch(user.get().getUid(), request.getOldPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMainPasswordResponse);
+        }
+
+        userService.delete(user.get());
+        return ResponseEntity.ok(successDeleteAccountResponse);
     }
 
     @PostMapping("/reset-password")

@@ -99,4 +99,8 @@ public class UserService {
     public Optional<VerificationCode> findVerificationCodeByUserAndVerificationType(User user, VerificationType type) {
         return verificationCodeRepository.findByUserAndVerificationType(user, type);
     }
+
+    public void delete(User user) {
+        userRepository.delete(user);
+    }
 }

@@ -59,7 +59,7 @@ public class PasswordController {
         if (user.isEmpty()) {
             throw new UsernameNotFoundException(userNotFoundMessage);
         }
-        if (passwordService.isPasswordExists(request.getName(), request.getUsername(), user.get().getUid())) {
+        if (passwordService.isPasswordExists(request.getName(), request.getUsername(), user.get())) {
             return ResponseEntity.badRequest().body(passwordDuplicatedResponse);
         }
         passwordService.savePassword(request, user.get());
@@ -72,11 +72,11 @@ public class PasswordController {
         if (user.isEmpty()) {
             throw new UsernameNotFoundException(userNotFoundMessage);
         }
-        Optional<Password> oldPassword = passwordService.findByUidAndUserUid(request.getUid(), user.get().getUid());
+        Optional<Password> oldPassword = passwordService.findByUidAndUser(request.getUid(), user.get());
         if (oldPassword.isEmpty()) {
             return ResponseEntity.badRequest().body(passwordNotFoundResponse);
         }
-        if ((!Objects.equals(request.getName(), oldPassword.get().getName()) && !Objects.equals(request.getUsername(), oldPassword.get().getUsername())) && passwordService.isPasswordExists(request.getName(), request.getUsername(), user.get().getUid())) {
+        if ((!Objects.equals(request.getName(), oldPassword.get().getName()) && !Objects.equals(request.getUsername(), oldPassword.get().getUsername())) && passwordService.isPasswordExists(request.getName(), request.getUsername(), user.get())) {
             return ResponseEntity.badRequest().body(passwordDuplicatedResponse);
         }
         passwordService.updatePassword(request, user.get(), oldPassword.get());
@@ -89,7 +89,7 @@ public class PasswordController {
         if (user.isEmpty()) {
             throw new UsernameNotFoundException(userNotFoundMessage);
         }
-        List<Password> passwords = passwordService.findAllByUserUid(user.get().getUid());
+        List<Password> passwords = passwordService.findAllByUser(user.get());
         if (Objects.equals(type, "file")) {
             if (header.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(mainPasswordNotFoundResponse);
@@ -108,7 +108,7 @@ public class PasswordController {
             }
             return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"").contentLength(resource.contentLength()).contentType(MediaType.APPLICATION_JSON).body(resource);
         } else if (Objects.equals(type, "json")) {
-            return ResponseEntity.ok(passwordService.findAllByUserUid(user.get().getUid()));
+            return ResponseEntity.ok(passwordService.findAllByUser(user.get()));
         } else {
             return ResponseEntity.badRequest().body(disallowedExportFileTypeResponse);
         }
@@ -120,8 +120,8 @@ public class PasswordController {
         if (user.isEmpty()) {
             throw new UsernameNotFoundException(userNotFoundMessage);
         }
-        if (passwordService.findByUidAndUserUid(uid, user.get().getUid()).isPresent()) {
-            return ResponseEntity.ok(passwordService.findByUidAndUserUid(uid, user.get().getUid()).get());
+        if (passwordService.findByUidAndUser(uid, user.get()).isPresent()) {
+            return ResponseEntity.ok(passwordService.findByUidAndUser(uid, user.get()).get());
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -133,7 +133,7 @@ public class PasswordController {
         if (user.isEmpty()) {
             throw new UsernameNotFoundException(userNotFoundMessage);
         }
-        Optional<Password> deletedPassword = passwordService.findByUidAndUserUid(request.getUid(), user.get().getUid());
+        Optional<Password> deletedPassword = passwordService.findByUidAndUser(request.getUid(), user.get());
         if (deletedPassword.isEmpty()) {
             return ResponseEntity.badRequest().body(passwordNotFoundResponse);
         }
@@ -182,7 +182,7 @@ public class PasswordController {
                         failedCnt += 1;
                         continue;
                     }
-                    if (passwordService.isPasswordExists(password.getName(), password.getUsername(), user.get().getUid())) {
+                    if (passwordService.isPasswordExists(password.getName(), password.getUsername(), user.get())) {
                         failedCnt += 1;
                         continue;
                     }
@@ -210,7 +210,7 @@ public class PasswordController {
         if (userService.isMainPasswordMismatch(user.get().getUid(), header.get())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMainPasswordResponse);
         }
-        passwordService.deletePasswords(user.get().getUid());
+        passwordService.deletePasswords(user.get());
         return ResponseEntity.ok(successDeletePasswordsResponse);
     }
 
@@ -224,7 +224,7 @@ public class PasswordController {
         int failedCnt = 0;
         List<String> passwordUidList = request.getPasswordUidList();
         for (String passwordUid : passwordUidList) {
-            Optional<Password> deletedPassword = passwordService.findByUidAndUserUid(passwordUid, user.get().getUid());
+            Optional<Password> deletedPassword = passwordService.findByUidAndUser(passwordUid, user.get());
             if (deletedPassword.isEmpty()) {
                 failedCnt++;
                 continue;

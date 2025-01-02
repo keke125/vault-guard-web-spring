@@ -34,7 +34,7 @@ public class PasswordService {
         password.setUrlList(request.getUrlList());
         password.setCreatedDateTime(timeStamp);
         password.setLastModifiedDateTime(timeStamp);
-        password.setUserUid(user.getUid());
+        password.setUser(user);
         repository.save(password);
     }
 
@@ -48,32 +48,32 @@ public class PasswordService {
         oldPassword.setNotes(request.getNotes());
         oldPassword.setUrlList(request.getUrlList());
         oldPassword.setLastModifiedDateTime(timeStamp);
-        oldPassword.setUserUid(user.getUid());
+        oldPassword.setUser(user);
         repository.save(oldPassword);
     }
 
-    public List<Password> findAllByUserUid(String userUid) {
-        return repository.findAllByUserUid(userUid);
+    public List<Password> findAllByUser(User user) {
+        return repository.findAllByUser(user);
     }
 
-    public Optional<Password> findByUidAndUserUid(String uid, String userUid) {
-        return repository.findByUidAndUserUid(uid, userUid);
+    public Optional<Password> findByUidAndUser(String uid, User user) {
+        return repository.findByUidAndUser(uid, user);
     }
 
     public void deletePassword(Password password) {
         repository.delete(password);
     }
 
-    public Boolean isPasswordExists(String name, String username, String userUid) {
-        return repository.findByNameAndUsernameAndUserUid(name, username, userUid).isPresent();
+    public Boolean isPasswordExists(String name, String username, User user) {
+        return repository.findByNameAndUsernameAndUser(name, username, user).isPresent();
     }
 
     public void savePasswordByPassword(Password password, User user) {
-        password.setUserUid(user.getUid());
+        password.setUser(user);
         repository.save(password);
     }
 
-    public void deletePasswords(String userUid) {
-        repository.deleteAllByUserUid(userUid);
+    public void deletePasswords(User user) {
+        repository.deleteAllByUser(user);
     }
 }

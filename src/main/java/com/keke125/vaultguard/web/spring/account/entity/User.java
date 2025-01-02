@@ -1,6 +1,7 @@
 package com.keke125.vaultguard.web.spring.account.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.keke125.vaultguard.web.spring.password.entity.Password;
 import com.keke125.vaultguard.web.spring.util.AbstractEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -73,6 +75,12 @@ public class User extends AbstractEntity implements UserDetails {
     @Getter
     @Setter
     private LocalDateTime lastSendVerificationCodeDate;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<VerificationCode> verificationCodes;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Password> passwords;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
