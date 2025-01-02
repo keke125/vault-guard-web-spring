@@ -101,7 +101,7 @@ public class UserController {
                 if (request.getNewUsername() == null) {
                     return ResponseEntity.badRequest().body(emptyUsernameResponse);
                 }
-                if (!userService.isUsernameNonExist(request.getNewUsername()) && !Objects.equals(request.getNewUsername(), user.get().getUsername())) {
+                if (userService.isUsernameExist(request.getNewUsername()) && !Objects.equals(request.getNewUsername(), user.get().getUsername())) {
                     return ResponseEntity.badRequest().body(usernameDuplicatedResponse);
                 }
                 user.get().setUsername(request.getNewUsername());

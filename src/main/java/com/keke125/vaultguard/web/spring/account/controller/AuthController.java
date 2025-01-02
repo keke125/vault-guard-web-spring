@@ -55,7 +55,7 @@ public class AuthController {
         newUser.setAccountNonLocked(true);
         newUser.setCredentialsNonExpired(true);
         newUser.setLastSendVerificationCodeDate(LocalDateTime.now());
-        if (!userService.isUsernameNonExist(request.getUsername())) {
+        if (userService.isUsernameExist(request.getUsername())) {
             if (userService.isEmailExist(request.getEmail())) {
                 return ResponseEntity.badRequest().body(emailAndUsernameDuplicatedResponse);
             }

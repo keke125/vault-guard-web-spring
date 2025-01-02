@@ -35,8 +35,8 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public boolean isUsernameNonExist(String username) {
-        return findByUsername(username).isEmpty();
+    public boolean isUsernameExist(String username) {
+        return findByUsername(username).isPresent();
     }
 
     public boolean isEmailExist(String email) {
