@@ -1,9 +1,11 @@
 package com.keke125.vaultguard.web.spring.password.service;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.keke125.vaultguard.web.spring.password.entity.Password;
+import com.keke125.vaultguard.web.spring.util.LocalDateTimeTypeAdapter;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -38,7 +40,7 @@ public class FileService {
                 String timeStamp;
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
                 timeStamp = LocalDateTime.now().format(formatter);
-                Password passwordItem = new Password(name, username, password, urlList, notes, "", timeStamp, timeStamp, "");
+                Password passwordItem = new Password(name, username, password, urlList, notes, "", timeStamp, timeStamp, null);
                 passwords.add(passwordItem);
             }
             return passwords;
@@ -48,7 +50,7 @@ public class FileService {
     }
 
     public List<Password> readJsonFromVG(InputStream inputStream) {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter()).create();
         Reader inputReader = new InputStreamReader(inputStream);
         JsonReader reader = new JsonReader(inputReader);
         TypeToken<List<Password>> listType = new TypeToken<>() {
@@ -71,6 +73,6 @@ public class FileService {
         List<String> urlList = passwordRecord.getUrlList();
         String createdDateTime = passwordRecord.getCreatedDateTime();
         String lastModifiedDateTime = passwordRecord.getLastModifiedDateTime();
-        return new Password(name, username, password, urlList, notes, totp, createdDateTime, lastModifiedDateTime, "");
+        return new Password(name, username, password, urlList, notes, totp, createdDateTime, lastModifiedDateTime, null);
     }
 }
