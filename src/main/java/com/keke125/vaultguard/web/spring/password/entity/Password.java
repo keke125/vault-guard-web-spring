@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "password", uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "username"})})
+@Table(name = "password", uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "username", "user_uid"})})
 public class Password extends AbstractEntity {
     private String name;
     private String username;
